@@ -14,11 +14,11 @@ RUN apt-get install git
 WORKDIR /workspace
 
 ARG jupyterlab_version
-ARG execute_time_version
+ARG executetime_version
 
 # update pip and install necessary packages
 RUN /usr/local/bin/python -m pip install --upgrade pip
-RUN pip install pip-tools jupyterlab==${jupyterlab_version} jupyterlab-execute-time==${execute_time_version}
+RUN pip install pip-tools jupyterlab==${jupyterlab_version} jupyterlab-execute-time==${executetime_version}
 # install theme
 RUN pip install git+https://github.com/Majramos/jupyterlab-theme-solarized-dark
 # setup jupyter lab configurations
