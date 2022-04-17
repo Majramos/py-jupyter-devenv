@@ -1,7 +1,7 @@
 #!/bin/bash
 
-# list all images with jupyterlab
-images=($(eval "docker images -a" | awk '/jupyterlab/ {print $1}'))
+# list all image:tag with jupyterlab
+images=($(eval "docker images -a" | awk '/^jupyterlab/ {print $1":"$2}'))
 
 # list all containers based on a jupyterlab image
 containers=($(eval "docker container ls -a --format '{{.Names}} {{.Image}}'" | awk '/jupyterlab/ {print $1}'))

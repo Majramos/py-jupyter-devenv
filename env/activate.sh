@@ -12,7 +12,7 @@ if [[ ! -f "${spath}/config/container" ]]; then
     exit 1
 else
     # load container name
-    container=$(eval "cat ${spath}/config/container")
+    container=$(eval "cat ${spath}/config/container_name")
 fi
 
 # -- Start the container
@@ -21,7 +21,7 @@ fi
 if [[ $(check_container $container) == "true" ]]; then
     # docker start regulacao_petrolifero
     echo "docker start regulacao_petrolifero"
-    
+
     port=$(get_container_port $container)
     # xdg-open http://localhost:$port/
     # python3 -m webbrowser http://localhost:$port/

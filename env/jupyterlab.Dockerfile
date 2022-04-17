@@ -5,13 +5,8 @@ FROM python:${python_version}-slim
 
 # Install the linux libraries needed and java
 RUN apt-get update && apt-get clean
-# pyodbc build dependencies
-RUN apt-get install -y gcc+ g++ unixodbc-dev
-# isntall git
-RUN apt-get install git
-
-# set a directory for the app
-WORKDIR /workspace
+# git and pyodbc build dependencies
+RUN apt-get install -y gcc+ g++ unixodbc-dev git nodejs
 
 ARG jupyterlab_version
 ARG executetime_version
@@ -22,10 +17,16 @@ RUN pip install pip-tools jupyterlab==${jupyterlab_version} jupyterlab-execute-t
 # install theme
 RUN pip install git+https://github.com/Majramos/jupyterlab-theme-solarized-dark
 # setup jupyter lab configurations
-RUN git clone https://github.com/Majramos/jupyterlab-settings.git && ./jupyterlab-settings/install.sh
+RUN git clone https://github.com/Majramos/jupyterlab-settings.git
+RUN chmod u+x ./jupyterlab-settings/install.sh && ./jupyterlab-settings/install.sh
 
+# remove stuff not needed to save space, nodejs
+# RUN apt-get remove -y git nodejs && apt-get clean
 
 ENV PIP_DISABLE_PIP_VERSION_CHECK=1
+
+# set a directory for the app
+WORKDIR /workspace
 
 EXPOSE 8888
 
