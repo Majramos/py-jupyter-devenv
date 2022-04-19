@@ -24,7 +24,7 @@ source "${SCRIPT_PATH}/container.sh"
 
 usage () {
     cat <<USAGE_TEXT
-Usage: ./env/dev [-h | --help] [-v | --verbose] [-s | --skip] [-b | --build]
+Usage: env/setup [-h | --help] [-v | --verbose] [-s | --skip] [-b | --build]
                  [-d | --default] [-c | --create] [-r | --run] [--lc] [--li]
                  [--show-defaults]
 DESCRIPTION

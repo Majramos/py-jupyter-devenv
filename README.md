@@ -2,13 +2,17 @@
 
 Setup a python with jupyter lab container and configurations
 
+![GPLv3 License](https://img.shields.io/badge/License-GPL%20v3-yellow.svg)
+![Top languague](https://img.shields.io/github/languages/top/Majramos/py-jupyter-devenv)
+
 ## Installation
 
+use git to repo to a folder of your choosing and run install.sh to remove files not needed
 ```bash 
 git clone --depth=1 https://github.com/Majramos/py-jupyter-devenv.git && py-jupyter-devenv/install.sh
 ```
 
-## Usage/Examples
+## Usage
 
 rename the cloned repository to a name of your liking and go into the folder
 ```bash
@@ -18,9 +22,9 @@ cd ./<name of my project>
 
 In your project folder you can call the script
 ```bash
-Usage: ./env/dev [-h | --help] [-v | --verbose] [-s | --skip] [-b | --build]
-                      [-d | --default] [-c | --create] [-r | --run] [--lc] [--li]
-                      [--show-defaults]
+Usage: env/setup [-h | --help] [-v | --verbose] [-s | --skip] [-b | --build]
+                 [-d | --default] [-c | --create] [-r | --run] [--lc] [--li]
+                 [--show-defaults]
 DESCRIPTION
     Setup a python+jupyter development environment using containers trough Docker
 OPTIONS:
@@ -53,8 +57,6 @@ OPTIONS:
  - Add option to change .Dockerfile settings
  
 ## License
-
-[![GPLv3 License](https://img.shields.io/badge/License-GPL%20v3-yellow.svg)](https://opensource.org/licenses/)
 
 [GPLv3](https://choosealicense.com/licenses/gpl-3.0/)
 
