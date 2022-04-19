@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 
+CONTAINER_NAME="${PWD##*/}"
 
 # list all containers based on a jupyterlab image
 # containers=($(get_containers)) to get a array
@@ -9,6 +10,7 @@ get_containers() {
 
 # check if container name exists
 check_container() {
+    local containers=($(get_containers))
     [[ " ${containers[*]} " =~ " $1 " ]] && echo "true" || echo "false"
 }
 
@@ -42,35 +44,39 @@ random () {
 
 # choose a name to the container and port
 prompt_container() {
-    CONTAINER_NAME="${PWD##*/}"
-    while [[ ! $container_name =~ ^[a-zA-Z0-9_-]+[^[:space:]]$ ]] || [[ "$(check_container $container_name)" == "true" ]]; do
-        read -ep "Choose a name for the container:" -i "${CONTAINER_NAME}" container_name
-    done
-
-    echo $container_name > ${SCRIPT_PATH}/container_name
-    msg "Saving container name: $container_name"
 
     # choose a random port that is available or sugest a new one if necessary
     PORT=$(random)
-    while [[ "$(check_port $PORT)" == "true" ]]; do
-        msg "Port '$PORT' is already in use"
-        PORT=$(random)
-    done
-    while [[ ! $port =~ ^[1-9][0-9]{3}$ ]] || [[ "$(check_port $port)" == "true" ]]; do
-        read -ep "Choose a port available:" -i "${PORT}" port
-    done
-    msg "Port choosen: $port"
+    while [[ "$(check_port $PORT)" == "true" ]]; do PORT=$(random); done
+
+    if [[ $default_flag == "true" ]]; then
+        container_name=$CONTAINER_NAME
+        port=$PORT
+    else
+        container_name=""
+        while [[ ! $container_name =~ ^[a-zA-Z0-9_-]+[^[:space:]]$ ]] || [[ "$(check_container $container_name)" == "true" ]]; do
+            read -ep "Choose a name for the container: " -i "${CONTAINER_NAME}" container_name
+        done
+        port=""
+        while [[ ! $port =~ ^[1-9][0-9]{3}$ ]] || [[ "$(check_port $port)" == "true" ]]; do
+            read -ep "Choose a port available: " -i "${PORT}" port
+        done
+    fi
     
+    echo $container_name > ${SCRIPT_PATH}/container_name
+    msg "Saving container name: $container_name"
+    msg "Port choosen:          $port"
+
     workspace="${PWD}"
     msg "Workspace linked to folder: $workspace"
 }
 
 # Create the Container
-create_container() {    
+create_container() {
     docker create \
         --name=$container_name \
         --restart=no \
-        -v $workspace:/workspace \
+        -v "/${workspace}":/workspace \
         -p $port:8888 \
         $image
         

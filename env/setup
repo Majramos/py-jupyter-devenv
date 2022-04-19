@@ -39,7 +39,8 @@ OPTIONS:
     -b, --build
         Build a new image skipping the lookup for new images
     -d, --default
-        Build a new image using default versions
+        Build a new image using default stack versions
+        Creates container using name of the parent folder and a random port
         Use --show-defaults to list the defaults values
     -c, --create
         Create a container from a existing image
@@ -66,16 +67,14 @@ die() {
 # to send message in case of verbose output
 msg() {
     local -r msg="${1}"
-    if [[ $verbose == 'true' ]]; then
-        echo "${msg}"
-    fi
+    if [[ $verbose == 'true' ]]; then echo "${msg}"; fi
 }
 
 parse_user_options() {
     local -r args=("${@}")
     local opts
     # The following code works perfectly for 
-    opts=$(getopt --options h,v,b,r --long help,verbose,build,run,lc,li,default,show-defaults -- "${args[@]}" 2> /dev/null) || {
+    opts=$(getopt --options h,v,s,b,d,c,r --long help,verbose,skip,build,default,create,run,lc,li,show-defaults -- "${args[@]}" 2> /dev/null) || {
         usage
         die "error: parsing options" "${ERROR_PARSING_OPTIONS}"
     }
@@ -126,10 +125,6 @@ parse_user_options() {
                 exit 0
                 ;;
             --)
-                build_flag="true"
-                create_flag="true"
-                run_flag="true"
-                shift
                 break
                 ;;
             *)
@@ -140,6 +135,11 @@ parse_user_options() {
     done
 }
 parse_user_options "${@}"
+
+if [[ $build_flag == "false" && $create_flag == "false" && $run_flag == "false" ]]; then
+    usage
+    exit 0
+fi
 
 if [[ $skip_docker_check_flag == "false" ]]; then
     # Check if docker is installed
@@ -158,12 +158,10 @@ if [[ $skip_docker_check_flag == "false" ]]; then
     fi
 fi
 
+set_defaults
+
 if [[ $build_flag == "true" ]]; then
-    if [[ $default_flag == "true" ]]; then
-        set_defaults
-    else
-        prompt_versions
-    fi
+    if [[ $default_flag == "false" ]]; then prompt_versions; fi
     build_image
 fi
 

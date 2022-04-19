@@ -2,6 +2,10 @@
 
 Setup a python with jupyter lab container and configurations
 
+This library allows to build images and create/run containers
+
+The images built are named **jupyterlab:py<version>-jl<version>**
+
 Currently creates containers using a highly customized docker image.
 You may adapt it at /env/jupyterlab.Dockerfile
 
@@ -10,20 +14,27 @@ You may adapt it at /env/jupyterlab.Dockerfile
 ![latest tag](https://img.shields.io/github/v/tag/Majramos/py-jupyter-devenv)
 ![latest commit](https://img.shields.io/github/last-commit/Majramos/py-jupyter-devenv)
 
+
+## Features
+- Creates a fully contained dpython development environment with jupyterlab
+- Setups my jupyterlab user settings and installs a custom theme and extensions
+- Mounts volume using a local folder
+
+
 ## Installation
 
 use git to repo to a folder of your choosing and run install.sh to remove files not needed
-```bash 
+```bash
 git clone --depth=1 https://github.com/Majramos/py-jupyter-devenv.git && py-jupyter-devenv/install.sh
 ```
-
-## Usage
 
 rename the cloned repository to a name of your liking and go into the folder
 ```bash
 mv ./py-jupyter-devenv ./<name of my project>
 cd ./<name of my project>
 ```
+
+## Usage
 
 In your project folder you can call the script
 ```bash
@@ -42,7 +53,8 @@ OPTIONS:
     -b, --build
         Build a new image skipping the lookup for new images
     -d, --default
-        Build a new image using default versions
+        Build a new image using default stack versions
+        Creates container using name of the parent folder and a random port
         Use --show-defaults to list the defaults values
     -c, --create
         Create a container from a existing image
@@ -54,17 +66,55 @@ OPTIONS:
         List available containers with python and jupyterlab
     --show-defaults
         List stack version used (python and jupyter lab)
+AUTHOR
+    Marco Ramos
 ```
 
+
+## Defaults
+
+`PYTHON_VERSION=3.9.12`
+
+`JUPYTERLAB_VERSION=3.2.9`
+
+`EXECUTETIME_VERSION=2.1.0`
+
+
+# Files
+
+/env/container_name
+- File with the name of the container created
+
+/env/jupyterlab.Dockerfile
+- File for creating docker image
+
+/install.sh
+- For when cloning repo, file cleaning
+
+
 ## Roadmap
- - Add way to change volume mount in case of workspace folder changes location
- - Add option to build workspace folder structure
- - Add option to change .Dockerfile settings
- 
+Add way to change volume mount in case of workspace folder changes location
+
+Add option to build workspace folder structure
+
+Add option to change .Dockerfile settings/build the Dockerfile
+
+
 ## License
 
 [GPLv3](https://choosealicense.com/licenses/gpl-3.0/)
 
+
 ## Authors
 
-- [@marcoramos](https://github.com/Majramos)
+[@marcoramos](https://github.com/Majramos)
+
+
+## Acknowledgements
+
+[Docker](https://www.docker.com/)
+[Jupyter Lab](https://jupyter.org/)
+[jupyterlab-execute-time](https://github.com/deshaw/jupyterlab-execute-time)
+[jupyter lab theme (original)](https://github.com/AllanChain/jupyterlab-theme-solarized-dark)
+[jupyter lab theme (adapted)](https://github.com/Majramos/jupyterlab-theme-solarized-dark)
+

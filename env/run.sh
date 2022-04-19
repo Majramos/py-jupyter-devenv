@@ -12,13 +12,21 @@ fi
 
 # check if the container exits first
 if [[ $(check_container $container) == "true" ]]; then
-    # docker start regulacao_petrolifero
-    echo "docker start regulacao_petrolifero"
+    if [ "$( docker container inspect -f '{{.State.Status}}' $container )" != "running" ]; then
+        msg "Starting $container using docker"
+        docker start $container
+    else
+        msg "Container '$container' is already running"
+    fi
 
     port=$(get_container_port $container)
-    # xdg-open http://localhost:$port/
-    # python3 -m webbrowser http://localhost:$port/
-    echo "python3 -m webbrowser http://localhost:$port/"
+    msg "Opening in browser at http://localhost:$port/"
+    if [[ $(eval which python) == "" ]]; then
+        # xdg-open http://localhost:$port/
+        python3 -m webbrowser http://localhost:$port/
+    else
+        python -m webbrowser http://localhost:$port/
+    fi
 else
     die "Container '$container' has not been created, please create first"
 fi

@@ -16,7 +16,7 @@ set_defaults() {
     python_version=$PYTHON_VERSION
     jupyterlab_version=$JUPYTERLAB_VERSION
     executetime_version=$EXECUTETIME_VERSION
-    msg "Using default stack version values (see --show-defaults)"
+    msg "Setting default stack versions values (see --show-defaults)"
 }
 
 # list all image:tag with jupyterlab
@@ -30,28 +30,29 @@ check_image() {
     [[ " ${images[*]} " =~ " $1 " ]] && echo "true" || echo "false"
 }
 
+
+__prompt_version() {
+    local version
+    read -ep "Specify a $1 version:" -i $2 version
+    while [[ ! $version =~ ^[0-9]+(\.[0-9]+){1,2}$ ]] ; do
+        read -ep "Specify a $1 version: " -i "$2" version
+    done
+    echo $version
+}
+
 # Prompt for stack versions
 prompt_versions() {
-    # python
-    while [[ ! $python_version =~ ^[0-9]+(\.[0-9]+){1,2}$ ]] ; do 
-        read -ep "Specify a Python version:" -i "${PYTHON_VERSION}" python_version
-    done
-    #jupyter lab
-    while [[ ! $jupyterlab_version =~ ^[0-9]+(\.[0-9]+){1,2}$ ]] ; do 
-        read -ep "Specify a Jupyter Lab version:" -i "${JUPYTERLAB_VERSION}" jupyterlab_version
-    done
-    #execution time
-    while [[ ! $executetime_version =~ ^[0-9]+(\.[0-9]+){1,2}$ ]] ; do 
-        read -ep "Specify a Execute Time Extension version:" -i "${EXECUTETIME_VERSION}" executetime_version
-    done
-    msg "Setting Python:$python_version, JupyterLab:$jupyterlab_version"
+    python_version=$(__prompt_version "Python" $PYTHON_VERSION $python_version)
+    jupyterlab_version=$(__prompt_version "Jupyter Lab" $JUPYTERLAB_VERSION $jupyterlab_version)
+    executetime_version=$(__prompt_version "JL Execute Time" $EXECUTETIME_VERSION $executetime_version)
+    msg "Setting Stack Versions Python:$python_version, JupyterLab:$jupyterlab_version"
 }
 
 # Building the Image
 build_image() {
     image="jupyterlab:py${python_version}-jl${jupyterlab_version}"
+    # --no-cache 
     docker build \
-        --no-cache \
         --build-arg python_version="${python_version}" \
         --build-arg jupyterlab_version="${jupyterlab_version}" \
         --build-arg executetime_version="${executetime_version}" \
@@ -63,25 +64,30 @@ build_image() {
 # See images available and either choose one to use or build a new one
 prompt_images() {
     local images=($(get_images))
-    IFS=$'\n' images=($(sort -r <<<"${images[*]}")); unset IFS  # sort list of images
-    images=("Build a new image" "${images[@]}")
-    local -r len_options=${#images[@]}
-    local i=0
-    echo "Found existing jupyterlab images:"
-    for item in "${images[@]}"; do
-        printf '%s\n' "  $((++i))) $item"
-    done
-    while :; do  # choose a valid option
-        read -ep "Choose a image:" -i 2 index
-        if (( $index >= 1 && $index <= $len_options )); then
-            break
-        else
-            echo "Incorrect Input: Select a number 1-$len_options"
-        fi
-    done
-    
+    if [[ ${#images[@]} == 0 ]]; then
+        echo "No jupyterlab images were found, need to create one"
+        index=1
+    else
+        IFS=$'\n' images=($(sort -r <<<"${images[*]}")); unset IFS  # sort list of images
+        images=("Build a new image" "${images[@]}")
+        local -r len_options=${#images[@]}
+        local i=0
+        echo "Found existing jupyterlab images:"
+        for item in "${images[@]}"; do
+            printf '%s\n' "  $((++i))) $item"
+        done
+        while :; do  # choose a valid option
+            read -ep "Choose a image:" -i 2 index
+            if (( $index >= 1 && $index <= $len_options )); then
+                break
+            else
+                echo "Incorrect Input: Select a number 1-$len_options"
+            fi
+        done
+    fi
+
     if [[ $index == 1 ]]; then
-        prompt_versions
+        if [[ $default_flag == "false" ]]; then prompt_versions; fi
         build_image
     else
         image=${images[$index-1]}
