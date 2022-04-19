@@ -4,7 +4,7 @@ Setup a python with jupyter lab container and configurations
 
 This library allows to build images and create/run containers
 
-The images built are named **jupyterlab:py<version>-jl<version>**
+The images built are named **jupyterlab:pyX.Y.Z-jlX.Y.Z**
 
 Currently creates containers using a highly customized docker image.
 You may adapt it at /env/jupyterlab.Dockerfile
@@ -16,8 +16,8 @@ You may adapt it at /env/jupyterlab.Dockerfile
 
 
 ## Features
-- Creates a fully contained dpython development environment with jupyterlab
-- Setups my jupyterlab user settings and installs a custom theme and extensions
+- Creates a fully contained python development environment with jupyterlab
+- Setup with my jupyterlab user settings and a custom theme and extensions
 - Mounts volume using a local folder
 
 
@@ -80,7 +80,7 @@ AUTHOR
 `EXECUTETIME_VERSION=2.1.0`
 
 
-# Files
+## Files
 
 /env/container_name
 - File with the name of the container created
@@ -113,8 +113,12 @@ Add option to change .Dockerfile settings/build the Dockerfile
 ## Acknowledgements
 
 [Docker](https://www.docker.com/)
+
 [Jupyter Lab](https://jupyter.org/)
-[jupyterlab-execute-time](https://github.com/deshaw/jupyterlab-execute-time)
-[jupyter lab theme (original)](https://github.com/AllanChain/jupyterlab-theme-solarized-dark)
+
+[jupyterlab-execute-time extension](https://github.com/deshaw/jupyterlab-execute-time)
+
+[jupyter lab theme (original) by AllanChain](https://github.com/AllanChain/jupyterlab-theme-solarized-dark)
+
 [jupyter lab theme (adapted)](https://github.com/Majramos/jupyterlab-theme-solarized-dark)
 
