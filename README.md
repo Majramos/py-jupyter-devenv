@@ -5,7 +5,7 @@ Setup a python with jupyter lab container and configurations
 ## Installation
 
 ```bash 
-git clone --depth=1 https://github.com/Majramos/py-jupyter-devenv.git && rm -rf !$/.git
+git clone --depth=1 https://github.com/Majramos/py-jupyter-devenv.git && py-jupyter-devenv/install.sh
 ```
 
 ## Usage/Examples
