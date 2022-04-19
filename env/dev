@@ -24,8 +24,9 @@ source "${SCRIPT_PATH}/container.sh"
 
 usage () {
     cat <<USAGE_TEXT
-Usage: ${SCRIPT_NAME} [-h | --help] [-v | --verbose] [-s | --skip] [-b | --build]
-                      [-d | --default] [-c | --create] [-r | --run] [--lc] [--li]  [--show-defaults]
+Usage: ./env/dev [-h | --help] [-v | --verbose] [-s | --skip] [-b | --build]
+                 [-d | --default] [-c | --create] [-r | --run] [--lc] [--li]
+                 [--show-defaults]
 DESCRIPTION
     Setup a python+jupyter development environment using containers trough Docker
 OPTIONS:
@@ -38,7 +39,8 @@ OPTIONS:
     -b, --build
         Build a new image skipping the lookup for new images
     -d, --default
-        Build a new image using default versions. Use --show-defaults to list the defaults values
+        Build a new image using default versions
+        Use --show-defaults to list the defaults values
     -c, --create
         Create a container from a existing image
     -r, --run
