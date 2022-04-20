@@ -8,6 +8,7 @@ set -o nounset
 set -o pipefail
 
 # variables needed
+readonly VERSION="0.1.0"
 readonly SCRIPT_PATH="$(dirname "${BASH_SOURCE[0]}")"
 readonly SCRIPT_NAME="${PWD##*/}"
 readonly ERROR_PARSING_OPTIONS=80
@@ -24,9 +25,9 @@ source "${SCRIPT_PATH}/container.sh"
 
 usage () {
     cat <<USAGE_TEXT
-Usage: env/setup [-h | --help] [-v | --verbose] [-s | --skip] [-b | --build]
-                 [-d | --default] [-c | --create] [-r | --run] [--lc] [--li]
-                 [--show-defaults]
+Usage: env/setup [-h | --help] [-v | --verbose] [-b | --build] [-d | --default]
+                 [-c | --create] [-r | --run] [--skip-check] [--lc] [--li]
+                 [--show-defaults] [--version]
 DESCRIPTION
     Setup a python+jupyter development environment using containers trough Docker
 OPTIONS:
@@ -34,8 +35,6 @@ OPTIONS:
         Print this help and exit.
     -v, --verbose
         Verbose output
-    -s, --skip
-        Skip checking if docker is installed and initialized
     -b, --build
         Build a new image skipping the lookup for new images
     -d, --default
@@ -46,12 +45,16 @@ OPTIONS:
         Create a container from a existing image
     -r, --run
         Run a existing container
+    --skip-check
+        Skip checking if docker is installed and initialized
     --li
         List available images with python and jupyterlab
     --lc
         List available containers with python and jupyterlab
     --show-defaults
         List stack version used (python and jupyter lab)
+    --version
+        Display version information
 AUTHOR
     Marco Ramos
 USAGE_TEXT
@@ -74,7 +77,7 @@ parse_user_options() {
     local -r args=("${@}")
     local opts
     # The following code works perfectly for 
-    opts=$(getopt --options h,v,s,b,d,c,r --long help,verbose,skip,build,default,create,run,lc,li,show-defaults -- "${args[@]}" 2> /dev/null) || {
+    opts=$(getopt --options h,v,b,d,c,r --long help,verbose,build,default,create,run,skip-check,lc,li,show-defaults,version -- "${args[@]}" 2> /dev/null) || {
         usage
         die "error: parsing options" "${ERROR_PARSING_OPTIONS}"
     }
@@ -88,10 +91,6 @@ parse_user_options() {
                 ;;
             -v|--verbose)
                 verbose="true"
-                shift
-                ;;
-            -s|--skip)
-                skip_docker_check_flag="true"
                 shift
                 ;;
             -b|--build)
@@ -110,10 +109,14 @@ parse_user_options() {
                 run_flag="true"
                 shift
                 ;;
+            --skip-check)
+                skip_docker_check_flag="true"
+                shift
+                ;;
             --lc)
                 # TODO: List containers and the respectives ports
                 msg "Looking for python+jupyter environments in containers"
-                get_containers
+                list_containers
                 exit 0
                 ;;
             --li)
@@ -123,6 +126,10 @@ parse_user_options() {
                 ;;
             --show-defaults)
                 list_stack_version
+                exit 0
+                ;;
+            --version)
+                echo "py-jupyter-env version: $VERSION"
                 exit 0
                 ;;
             --)

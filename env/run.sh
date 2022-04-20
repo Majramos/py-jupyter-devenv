@@ -21,11 +21,15 @@ if [[ $(check_container $container) == "true" ]]; then
 
     port=$(get_container_port $container)
     msg "Opening in browser at http://localhost:$port/"
-    if [[ $(eval which python) == "" ]]; then
+    check_python=$(eval which python) && check_python=${check_python##*/}
+    if [[ $check_python == "python3" ]]; then
         # xdg-open http://localhost:$port/
         python3 -m webbrowser http://localhost:$port/
-    else
+    elif [[ $check_python == "python" ]]; then
         python -m webbrowser http://localhost:$port/
+    else
+        echo "Can't find a python installation to auto open browser"
+        echo "Go to 'http://localhost:$port/'"
     fi
 else
     die "Container '$container' has not been created, please create first"

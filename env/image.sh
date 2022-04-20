@@ -4,18 +4,15 @@
 # Default Values for Stack Version
 readonly PYTHON_VERSION="3.9.12"
 readonly JUPYTERLAB_VERSION="3.2.9"
-readonly EXECUTETIME_VERSION="2.1.0"
 
 list_stack_version() {
     echo "Python Version:              $PYTHON_VERSION"
     echo "Jupyter lab Version:         $JUPYTERLAB_VERSION"
-    echo "Executime Extension Version: $EXECUTETIME_VERSION"
 }
 
 set_defaults() {
     python_version=$PYTHON_VERSION
     jupyterlab_version=$JUPYTERLAB_VERSION
-    executetime_version=$EXECUTETIME_VERSION
     msg "Setting default stack versions values (see --show-defaults)"
 }
 
@@ -44,7 +41,6 @@ __prompt_version() {
 prompt_versions() {
     python_version=$(__prompt_version "Python" $PYTHON_VERSION $python_version)
     jupyterlab_version=$(__prompt_version "Jupyter Lab" $JUPYTERLAB_VERSION $jupyterlab_version)
-    executetime_version=$(__prompt_version "JL Execute Time" $EXECUTETIME_VERSION $executetime_version)
     msg "Setting Stack Versions Python:$python_version, JupyterLab:$jupyterlab_version"
 }
 
@@ -55,7 +51,6 @@ build_image() {
     docker build \
         --build-arg python_version="${python_version}" \
         --build-arg jupyterlab_version="${jupyterlab_version}" \
-        --build-arg executetime_version="${executetime_version}" \
         -f env/jupyterlab.Dockerfile \
         -t $image .
     msg "Built image: $image"
@@ -91,6 +86,6 @@ prompt_images() {
         build_image
     else
         image=${images[$index-1]}
-        echo $image
+        msg "Choose image '$image'"
     fi
 }
