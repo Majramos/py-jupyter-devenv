@@ -88,21 +88,18 @@ OPTIONS:
 
 
 ## Roadmap
-Add way to change volume mount in case of workspace folder changes location
-
-Add option to build workspace folder structure
 
 Add option to stop the containers
 
-Add option to work with pip-tools automatically/ automally compile and sync
+Add option to build workspace folder structure
 
-Add option to change .Dockerfile settings/build the Dockerfile
+Add option to work with pip-tools automatically/ automally compile and sync
 
 Add option to self update
     - check for versions available
     - file to store version data
 
-Change option to skip docker check to --skip-check
+-
 
 
 ## License
@@ -122,8 +119,3 @@ Change option to skip docker check to --skip-check
 [Jupyter Lab](https://jupyter.org/)
 
 [jupyterlab-execute-time extension](https://github.com/deshaw/jupyterlab-execute-time)
-
-[jupyter lab theme (original) by AllanChain](https://github.com/AllanChain/jupyterlab-theme-solarized-dark)
-
-[jupyter lab theme (adapted)](https://github.com/Majramos/jupyterlab-theme-solarized-dark)
-
