@@ -39,7 +39,9 @@ In your project folder you can call the script
 ```bash
 Usage: env/setup [-h | --help] [-v | --verbose] [-b | --build] [-d | --default]
                  [-c | --create] [-r | --run] [--skip-check] [--lc] [--li]
-                 [--show-defaults] [--version]
+                 [--show-defaults] [--version] [--check-updates] [--update]
+DESCRIPTION
+    Setup a python+jupyter development environment using containers trough Docker
 OPTIONS:
     -h, --help
         Print this help and exit.
@@ -65,6 +67,10 @@ OPTIONS:
         List stack version used (python and jupyter lab)
     --version
         Display version information
+    --check-updates
+        Checks for package updates
+    --update
+        Updates package
 ```
 
 
@@ -89,17 +95,11 @@ OPTIONS:
 
 ## Roadmap
 
-Add option to stop the containers
+Add option to self update
 
 Add option to build workspace folder structure
 
 Add option to work with pip-tools automatically/ automally compile and sync
-
-Add option to self update
-    - check for versions available
-    - file to store version data
-
--
 
 
 ## License
@@ -118,4 +118,4 @@ Add option to self update
 
 [Jupyter Lab](https://jupyter.org/)
 
-[jupyterlab-execute-time extension](https://github.com/deshaw/jupyterlab-execute-time)
+[Python](https://www.python.org/)

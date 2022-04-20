@@ -68,11 +68,10 @@ prompt_images() {
         local -r len_options=${#images[@]}
         local i=0
         echo "Found existing jupyterlab images:"
-        for item in "${images[@]}"; do
-            printf '%s\n' "  $((++i))) $item"
-        done
+        # print all available images
+        for item in "${images[@]}"; do printf '%s\n' "  $((++i))) $item"; done
         while :; do  # choose a valid option
-            read -ep "Choose a image:" -i 2 index
+            read -ep "Choose a image: " -i 2 index
             if (( $index >= 1 && $index <= $len_options )); then
                 break
             else
@@ -82,6 +81,7 @@ prompt_images() {
     fi
 
     if [[ $index == 1 ]]; then
+        # first option is to build a new image
         if [[ $default_flag == "false" ]]; then prompt_versions; fi
         build_image
     else

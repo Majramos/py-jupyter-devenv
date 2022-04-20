@@ -2,14 +2,17 @@
 
 CONTAINER_NAME="${PWD##*/}"
 
-# list all containers based on a jupyterlab image
+# get all containers
 # containers=($(get_containers)) to get a array
 get_containers() {
     eval "docker container ls -a --format '{{.Names}} {{.Image}}'" | awk '{print $1}'
 }
 
+# list all containers based on a jupyterlab image
 list_containers() {
-    eval "docker container ls -a --format '{{.Names}} {{.Image}}'" | awk '/jupyterlab/ {print $1"\t"$2}' | column -t
+    eval "docker container ls -a --format '{{.Names}} {{.Image}}'" \
+        | awk '/jupyterlab/ {print $1"\t"$2}' \
+        | column -t
 }
 
 # check if container name exists
@@ -20,7 +23,8 @@ check_container() {
 
 # get the external port for a container
 get_container_port() {
-    echo $(eval "docker inspect --format='{{json .HostConfig.PortBindings}}' $1" | awk -F '[][]' '{print $2}' | grep -o '[0-9]\{4\}')
+    echo $(eval "docker inspect --format='{{json .HostConfig.PortBindings}}' $1" \
+           | awk -F '[][]' '{print $2}' | grep -o '[0-9]\{4\}')
 }
 
 ports=()
@@ -41,7 +45,7 @@ check_port() {
     [[ " ${ports[*]} " =~ " $1 " ]] && echo "true" || echo "false"
 }
 
-# generate random number between 1000 and 9999
+# generate random number between 1000 and 9999 to be used as port for containers
 random () {
     echo $[ $RANDOM % 8999+1000]
 }
@@ -58,7 +62,8 @@ prompt_container() {
         port=$PORT
     else
         container_name=""
-        while [[ ! $container_name =~ ^[a-zA-Z0-9_-]+[^[:space:]]$ ]] || [[ "$(check_container $container_name)" == "true" ]]; do
+        while [[ ! $container_name =~ ^[a-zA-Z0-9_-]+[^[:space:]]$ ]] \
+                || [[ "$(check_container $container_name)" == "true" ]]; do
             read -ep "Choose a name for the container: " -i "${CONTAINER_NAME}" container_name
         done
         port=""

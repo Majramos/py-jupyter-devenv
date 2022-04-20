@@ -7,8 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- Option to stop containers
+- Comments to functions
+- environment.sh to store functionality related to container environment
+- update.sh to store functionality related to updates and version
 
 ### Changed
+- README.md to add updated usage
 
 ### Deprecated
 
