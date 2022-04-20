@@ -97,7 +97,17 @@ Add way to change volume mount in case of workspace folder changes location
 
 Add option to build workspace folder structure
 
+Add option to stop the containers
+
+Add option to work with pip-tools automatically/ automally compile and sync
+
 Add option to change .Dockerfile settings/build the Dockerfile
+
+Add option to self update
+    - check for versions available
+    - file to store version data
+
+Change option to skip docker check to --skip-check
 
 
 ## License

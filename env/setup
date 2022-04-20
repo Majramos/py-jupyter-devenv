@@ -111,6 +111,7 @@ parse_user_options() {
                 shift
                 ;;
             --lc)
+                # TODO: List containers and the respectives ports
                 msg "Looking for python+jupyter environments in containers"
                 get_containers
                 exit 0

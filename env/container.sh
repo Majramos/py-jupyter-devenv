@@ -5,6 +5,7 @@ CONTAINER_NAME="${PWD##*/}"
 # list all containers based on a jupyterlab image
 # containers=($(get_containers)) to get a array
 get_containers() {
+    # TODO check against all existing images
     eval "docker container ls -a --format '{{.Names}} {{.Image}}'" | awk '/jupyterlab/ {print $1}'
 }
 
@@ -22,6 +23,7 @@ get_container_port() {
 ports=()
 # get all ports being used
 get_ports() {
+    # TODO: Check against all existing containers and not only the containers with jupyter lab
     local containers=($(get_containers))
     local ports=()
     for i in "${containers[@]}"; do
