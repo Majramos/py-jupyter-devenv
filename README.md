@@ -8,9 +8,7 @@ The images built are named **jupyterlab:pyX.Y.Z-jlX.Y.Z**
 
 You may adapt Dockerfile at /env/jupyterlab.Dockerfile
 
-![License](https://img.shields.io/github/license/Majramos/py-jupyter-devenv)
-![Top languague](https://img.shields.io/github/languages/top/Majramos/py-jupyter-devenv)
-![latest tag](https://img.shields.io/gitlab/v/tag/majramos/py-jupyter-devenv?sort=date)
+
 ![latest commit](https://img.shields.io/github/last-commit/Majramos/py-jupyter-devenv)
 
 
