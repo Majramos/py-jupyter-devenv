@@ -10,7 +10,7 @@ You may adapt Dockerfile at /env/jupyterlab.Dockerfile
 
 ![License](https://img.shields.io/github/license/Majramos/py-jupyter-devenv)
 ![Top languague](https://img.shields.io/github/languages/top/Majramos/py-jupyter-devenv)
-![latest tag](https://img.shields.io/github/v/tag/Majramos/py-jupyter-devenv)
+![latest tag](https://img.shields.io/gitlab/v/tag/majramos/py-jupyter-devenv?sort=date)
 ![latest commit](https://img.shields.io/github/last-commit/Majramos/py-jupyter-devenv)
 
 
@@ -109,7 +109,7 @@ Add option to work with pip-tools automatically/ automally compile and sync
 
 ## Authors
 
-[@marcoramos](https://github.com/Majramos)
+[@marcoramos](https://gitlab.com/majramos)
 
 
 ## Acknowledgements
