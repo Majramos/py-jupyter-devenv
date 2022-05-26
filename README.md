@@ -8,11 +8,6 @@ The images built are named **jupyterlab:pyX.Y.Z-jlX.Y.Z**
 
 You may adapt Dockerfile at /env/jupyterlab.Dockerfile
 
-![License](https://img.shields.io/github/license/Majramos/py-jupyter-devenv)
-![Top languague](https://img.shields.io/github/languages/top/Majramos/py-jupyter-devenv)
-![latest tag](https://img.shields.io/github/v/tag/Majramos/py-jupyter-devenv)
-![latest commit](https://img.shields.io/github/last-commit/Majramos/py-jupyter-devenv)
-
 
 ## Features
 - Creates a fully contained python development environment with jupyterlab
@@ -24,7 +19,7 @@ You may adapt Dockerfile at /env/jupyterlab.Dockerfile
 
 use git to repo to a folder of your choosing and run install.sh to remove files not needed
 ```bash
-git clone --depth=1 https://github.com/Majramos/py-jupyter-devenv.git && py-jupyter-devenv/install.sh
+git clone --depth=1 https://gitlab.com/majramos/py-jupyter-devenv.git && py-jupyter-devenv/install.sh
 ```
 
 rename the cloned repository to a name of your liking and go into the folder
@@ -109,7 +104,7 @@ Add option to work with pip-tools automatically/ automally compile and sync
 
 ## Authors
 
-[@marcoramos](https://github.com/Majramos)
+[@marcoramos](https://gitlab.com/majramos)
 
 
 ## Acknowledgements
