@@ -9,9 +9,6 @@ The images built are named **jupyterlab:pyX.Y.Z-jlX.Y.Z**
 You may adapt Dockerfile at /env/jupyterlab.Dockerfile
 
 
-![latest commit](https://img.shields.io/github/last-commit/Majramos/py-jupyter-devenv)
-
-
 ## Features
 - Creates a fully contained python development environment with jupyterlab
 - Setup with my jupyterlab user settings and a custom theme and extensions
