@@ -1,3 +1,5 @@
+# Moved over to [gitlab](https://gitlab.com/majramos/py-jupyter-devenv)
+
 # py-jupyter-devenv
 
 Setup a python with jupyter lab container and configurations
@@ -10,8 +12,6 @@ You may adapt Dockerfile at /env/jupyterlab.Dockerfile
 
 ![License](https://img.shields.io/github/license/Majramos/py-jupyter-devenv)
 ![Top languague](https://img.shields.io/github/languages/top/Majramos/py-jupyter-devenv)
-![latest tag](https://img.shields.io/github/v/tag/Majramos/py-jupyter-devenv)
-![latest commit](https://img.shields.io/github/last-commit/Majramos/py-jupyter-devenv)
 
 
 ## Features
