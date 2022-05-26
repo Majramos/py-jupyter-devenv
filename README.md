@@ -90,11 +90,7 @@ OPTIONS:
 
 ## Roadmap
 
-Add option to self update
-
-Add option to build workspace folder structure
-
-Add option to work with pip-tools automatically/ automally compile and sync
+look in milestones
 
 
 ## License
