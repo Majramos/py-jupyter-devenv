@@ -13,6 +13,6 @@ build_badges:
     - ./get-badge-info.sh
   artifacts:
     paths:
-        - badges.json
+        - /
     when: always
     expire_in: 4 weeks
