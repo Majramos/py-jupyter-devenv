@@ -41,7 +41,7 @@ OPTIONS:
         Build a new image skipping the lookup for new images
     -d, --default
         Build a new image using default stack versions
-        Creates container using name of the parent folder and a random port
+        Creates container using name of the parent directory and a random port
         Use --show-defaults to list the defaults values
     -c, --create
         Create a container from a existing image

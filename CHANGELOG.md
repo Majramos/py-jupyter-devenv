@@ -11,9 +11,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Comments to functions
 - environment.sh to store functionality related to container environment
 - update.sh to store functionality related to updates and version
+- Option to setup env in a existing folder
+- Option to keep original cloned directory
 
 ### Changed
 - README.md to add updated usage
+- Replaced folder by directory in documentation and usage
+- Installation to a step by step guided procedure
 
 ### Deprecated
 
