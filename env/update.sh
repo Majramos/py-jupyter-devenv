@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 
-readonly VERSION="0.1.0"
+readonly VERSION="0.1.1"
 
 # Get latest release from GitHub api
 # get_latest_release() {

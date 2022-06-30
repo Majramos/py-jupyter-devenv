@@ -12,25 +12,27 @@ You may adapt Dockerfile at /env/jupyterlab.Dockerfile
 ## Features
 - Creates a fully contained python development environment with jupyterlab
 - Setup with my jupyterlab user settings and a custom theme and extensions
-- Mounts volume using a local folder
+- Mounts volume using a local directory
 
 
 ## Installation
 
-use git to repo to a folder of your choosing and run install.sh to remove files not needed
+use git to repo to a directory of your choosing and run install.sh to remove files not needed
 ```bash
 git clone --depth=1 https://gitlab.com/majramos/py-jupyter-devenv.git && py-jupyter-devenv/install.sh
 ```
 
-rename the cloned repository to a name of your liking and go into the folder
+follow through installation steps to rename the directory or to adapt a existing project  
+you may choose to create a new folder and keep the py-jupyter-devenv folder
+
+finally move in to the directory
 ```bash
-mv ./py-jupyter-devenv ./<name of my project>
 cd ./<name of my project>
 ```
 
 ## Usage
 
-In your project folder you can call the script
+In your project directory you can call the script
 ```bash
 Usage: env/setup [-h | --help] [-v | --verbose] [-b | --build] [-d | --default]
                  [-c | --create] [-r | --run] [--skip-check] [--lc] [--li]
@@ -46,7 +48,7 @@ OPTIONS:
         Build a new image skipping the lookup for new images
     -d, --default
         Build a new image using default stack versions
-        Creates container using name of the parent folder and a random port
+        Creates container using name of the parent directory and a random port
         Use --show-defaults to list the defaults values
     -c, --create
         Create a container from a existing image
