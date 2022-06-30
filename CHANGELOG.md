@@ -7,6 +7,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+
+### Changed
+
+### Deprecated
+
+### Removed
+
+### Fixed
+
+### Security
+
+
+## [0.1.1] - 2022-06-30
+
+### Added
 - Option to stop containers
 - Comments to functions
 - environment.sh to store functionality related to container environment
@@ -18,14 +33,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - README.md to add updated usage
 - Replaced folder by directory in documentation and usage
 - Installation to a step by step guided procedure
-
-### Deprecated
-
-### Removed
-
-### Fixed
-
-### Security
 
 
 ## [0.1.0] - 2022-04-20
