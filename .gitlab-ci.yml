@@ -17,4 +17,4 @@ build_badges:
     paths:
         - ./badges.json
     when: always
-    expire_in: 4 weeks
+    expire_in: 1 day
