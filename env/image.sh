@@ -1,14 +1,11 @@
 #!/usr/bin/env bash
-
+#
+# Module to manage container images
 
 # Default Values for Stack Version
-readonly PYTHON_VERSION="3.9.12"
-readonly JUPYTERLAB_VERSION="3.2.9"
+readonly PYTHON_VERSION=$(read_config "PYTHON_VERSION")
+readonly JUPYTERLAB_VERSION=$(read_config "JUPYTERLAB_VERSION")
 
-list_stack_version() {
-    echo "Python Version:              $PYTHON_VERSION"
-    echo "Jupyter lab Version:         $JUPYTERLAB_VERSION"
-}
 
 set_defaults() {
     python_version=$PYTHON_VERSION
@@ -27,6 +24,10 @@ check_image() {
     [[ " ${images[*]} " =~ " $1 " ]] && echo "true" || echo "false"
 }
 
+# get the hash of the image
+get_image_id() {
+    docker image inspect --format="{{.Id}}" "jupyterlab:$1" | cut -d ":" -f 2
+}
 
 __prompt_version() {
     local version
@@ -47,18 +48,24 @@ prompt_versions() {
 # Building the Image
 build_image() {
     image="jupyterlab:py${python_version}-jl${jupyterlab_version}"
+
     # --no-cache 
     docker build \
         --build-arg python_version="${python_version}" \
         --build-arg jupyterlab_version="${jupyterlab_version}" \
         -f env/jupyterlab.Dockerfile \
         -t $image .
+
+    write_config "IMAGE_NAME" $image
+    write_config "IMAGE_ID" $(get_image_id $image)
+
     msg "Built image: $image"
 }
 
 # See images available and either choose one to use or build a new one
 prompt_images() {
     local images=($(get_images))
+
     if [[ ${#images[@]} == 0 ]]; then
         echo "No jupyterlab images were found, need to create one"
         index=1
