@@ -20,11 +20,6 @@ create_flag="false"
 run_flag="false"
 stop_flag="false"
 
-source "${SCRIPT_PATH}/utils.sh"
-source "${SCRIPT_PATH}/image.sh"
-source "${SCRIPT_PATH}/container.sh"
-source "${SCRIPT_PATH}/run.sh"
-
 
 die() {
     local -r msg="${1}"
@@ -38,6 +33,11 @@ msg() {
     local -r msg="${1}"
     if [[ $verbose == 'true' ]]; then echo "${msg}"; fi
 }
+
+
+source "${SCRIPT_PATH}/utils.sh"
+source "${SCRIPT_PATH}/image.sh"
+source "${SCRIPT_PATH}/container.sh"
 
 
 usage () {
