@@ -5,7 +5,7 @@
 
 CONFIG_FILE="${SCRIPT_PATH}/config"
 
-if [[ -! -f $CONFIG_FILE ]]; then
+if [[ ! -f $CONFIG_FILE ]]; then
     die "Configuration file couldn't be found!"
 else
     msg "Found configuration file"
