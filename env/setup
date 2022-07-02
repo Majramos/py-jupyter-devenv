@@ -20,10 +20,25 @@ create_flag="false"
 run_flag="false"
 stop_flag="false"
 
+source "${SCRIPT_PATH}/utils.sh"
 source "${SCRIPT_PATH}/image.sh"
 source "${SCRIPT_PATH}/container.sh"
 source "${SCRIPT_PATH}/run.sh"
-source "${SCRIPT_PATH}/update.sh"
+
+
+die() {
+    local -r msg="${1}"
+    local -r code="${2:-90}"
+    echo "${msg}" >&2
+    exit "${code}"
+}
+
+# to send message in case of verbose output
+msg() {
+    local -r msg="${1}"
+    if [[ $verbose == 'true' ]]; then echo "${msg}"; fi
+}
+
 
 usage () {
     cat <<USAGE_TEXT
@@ -47,44 +62,33 @@ OPTIONS:
         Create a container from a existing image
     -r, --run
         Run a existing container
+    --stop
+        Stop a running container
     --skip-check
         Skip checking if docker is installed and initialized
     --li
         List available images with python and jupyterlab
     --lc
         List available containers with python and jupyterlab
-    --show-defaults
-        List stack version used (python and jupyter lab)
+    --list-config
+        List configuration values (stack version used, python and jupyter lab)
     --version
         Display version information
     --check-updates
         Checks for package updates
-    --update
-        Updates package
 AUTHOR
     Marco Ramos
 USAGE_TEXT
 }
 
-die() {
-    local -r msg="${1}"
-    local -r code="${2:-90}"
-    echo "${msg}" >&2
-    exit "${code}"
-}
 
-# to send message in case of verbose output
-msg() {
-    local -r msg="${1}"
-    if [[ $verbose == 'true' ]]; then echo "${msg}"; fi
-}
 
 parse_user_options() {
     local -r args=("${@}")
     local opts
     # The following code works perfectly for 
     opts=$(getopt --options h,v,b,d,c,r \
-    --long help,verbose,build,default,create,run,skip-check,lc,li,show-defaults,version,stop,check-update,update \
+    --long help,verbose,build,default,create,run,stop,skip-check,lc,li,list-config,version,check-update \
     -- "${args[@]}" 2> /dev/null) || {
         usage
         die "error: parsing options" "${ERROR_PARSING_OPTIONS}"
@@ -117,12 +121,12 @@ parse_user_options() {
                 run_flag="true"
                 shift
                 ;;
-            --skip-check)
-                skip_docker_check_flag="true"
+            --stop)
+                stop_flag="true"
                 shift
                 ;;
-             --stop)
-                stop_flag="true"
+            --skip-check)
+                skip_docker_check_flag="true"
                 shift
                 ;;
             --lc)
@@ -135,20 +139,16 @@ parse_user_options() {
                 get_images
                 exit 0
                 ;;
-            --show-defaults)
-                list_stack_version
+            --list-config)
+                list_configuration
                 exit 0
                 ;;
             --version)
-                echo "py-jupyter-env version: $VERSION"
+                echo "py-jupyter-env version: "$(read_config "VERSION")
                 exit 0
                 ;;
             --check-update)
                 check_updates
-                exit 0
-                ;;
-            --update)
-                update
                 exit 0
                 ;;
             --)
