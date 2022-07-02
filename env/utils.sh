@@ -5,6 +5,11 @@
 
 CONFIG_FILE="${SCRIPT_PATH}/config"
 
+if [[ -! -f $CONFIG_FILE ]]; then
+    die "Configuration file couldn't be found!"
+else
+    msg "Found configuration file"
+fi
 
 read_config() {
     grep -w $1 $CONFIG_FILE | cut -d "=" -f 2
