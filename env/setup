@@ -20,10 +20,26 @@ create_flag="false"
 run_flag="false"
 stop_flag="false"
 
+source "${SCRIPT_PATH}/utils.sh"
 source "${SCRIPT_PATH}/image.sh"
 source "${SCRIPT_PATH}/container.sh"
 source "${SCRIPT_PATH}/run.sh"
 source "${SCRIPT_PATH}/update.sh"
+
+
+die() {
+    local -r msg="${1}"
+    local -r code="${2:-90}"
+    echo "${msg}" >&2
+    exit "${code}"
+}
+
+# to send message in case of verbose output
+msg() {
+    local -r msg="${1}"
+    if [[ $verbose == 'true' ]]; then echo "${msg}"; fi
+}
+
 
 usage () {
     cat <<USAGE_TEXT
@@ -66,18 +82,7 @@ AUTHOR
 USAGE_TEXT
 }
 
-die() {
-    local -r msg="${1}"
-    local -r code="${2:-90}"
-    echo "${msg}" >&2
-    exit "${code}"
-}
 
-# to send message in case of verbose output
-msg() {
-    local -r msg="${1}"
-    if [[ $verbose == 'true' ]]; then echo "${msg}"; fi
-}
 
 parse_user_options() {
     local -r args=("${@}")

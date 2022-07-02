@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 - Renamed build stage to badge stage
+- Configuration variables stored in file "env/config"
 
 ### Deprecated
 
