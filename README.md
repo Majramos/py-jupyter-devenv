@@ -54,20 +54,20 @@ OPTIONS:
         Create a container from a existing image
     -r, --run
         Run a existing container
+    --stop
+        Stop a running container
     --skip-check
         Skip checking if docker is installed and initialized
     --li
         List available images with python and jupyterlab
     --lc
         List available containers with python and jupyterlab
-    --show-defaults
-        List stack version used (python and jupyter lab)
+    --list-config
+        List configuration values (stack version used, python and jupyter lab)
     --version
         Display version information
     --check-updates
         Checks for package updates
-    --update
-        Updates package
 ```
 
 
@@ -80,6 +80,9 @@ OPTIONS:
 
 ## Files
 
+/env/config
+- configuration variables
+
 /env/container_name
 - File with the name of the container created
 
@@ -87,7 +90,7 @@ OPTIONS:
 - File for creating docker image
 
 /install.sh
-- For when cloning repo, file cleaning
+- For when cloning repo, installation procedure
 
 
 ## Roadmap
