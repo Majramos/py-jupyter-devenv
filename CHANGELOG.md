@@ -7,19 +7,30 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+### Changed
+### Deprecated
+### Removed
+### Fixed
+### Security
+
+
+## [0.1.2] - 2022-07-02
+
+### Added
+- Option to list container name and image name values
 
 ### Changed
 - Renamed build stage to badge stage
 - Configuration variables stored in file "env/config"
-
-### Deprecated
+- Check updates compares number by number if theres is a new release
 
 ### Removed
 - get-badge-info.sh
+- update.sh
+- option to update the package
 
 ### Fixed
-
-### Security
+- missing option in usage text
 
 
 ## [0.1.1] - 2022-06-30
