@@ -9,10 +9,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 ### Changed
+- Renamed build stage to badge stage
 
 ### Deprecated
 
 ### Removed
+- get-badge-info.sh
 
 ### Fixed
 
