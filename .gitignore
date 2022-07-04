@@ -1,2 +1,5 @@
 # bash file used for developing and testing code
 develop.sh
+
+# Jupyter Notebook
+.ipynb_checkpoints
