@@ -18,6 +18,7 @@ ARG jupyterlab_version
 # TODO: install python-dotenv
 RUN /usr/local/bin/python -m pip install --upgrade pip
 RUN pip install pip-tools jupyterlab==${jupyterlab_version}
+# TODO: make sure setuptools is version > 61 (issue #21)
 
 ENV PIP_DISABLE_PIP_VERSION_CHECK=1
 ENV PATH="/home/pyuser/.local/bin:$PATH"

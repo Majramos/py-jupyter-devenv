@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+#
+# Setup a python+jupyter development environment
+# This module is use to manage containers
+
+readonly ENV_PATH="$( cd -- "$(dirname "$0")" >/dev/null 2>&1 ; pwd -P )"
+
+source "${ENV_PATH}/scripts/utils.sh"
+source "${ENV_PATH}/scripts/container.sh"

@@ -1,0 +1,107 @@
+#!/usr/bin/env bash
+#
+# Setup a python+jupyter development environment
+# This module is use to manage images
+
+readonly ENV_PATH="$( cd -- "$(dirname "$0")" >/dev/null 2>&1 ; pwd -P )"
+
+source "${ENV_PATH}/scripts/utils.sh"
+source "${ENV_PATH}/scripts/image.sh"
+
+
+usage () {
+    cat <<USAGE_TEXT
+Usage: env/setup [-h | --help] [-v | --verbose] [-b | --build] [-d | --default]
+                 [-l | --list] [--skip-check] [--list-config] [-V | --version]
+                 [--check-updates]
+DESCRIPTION
+    Setup a python+jupyter development environment using containers trough Docker
+OPTIONS:
+    -h, --help
+        Print this help and exit.
+    -v, --verbose
+        Verbose output
+    -b, --build
+        Build a new image skipping the lookup for new images
+    -d, --default
+        Build a new image using default stack versions
+        Use --show-defaults to list the defaults values
+    -l, list
+        List available images with python and jupyterlab
+    -s, --skip-check
+        Skip checking if docker is installed and initialized
+    --list-config
+        List configuration values (stack version used, python and jupyter lab)
+    -V | --version
+        Display version information
+    --check-updates
+        Checks for package updates
+AUTHOR
+    Marco Ramos @ marcoramos.me
+USAGE_TEXT
+}
+
+
+parse_user_options() {
+    local -r args=("${@}")
+    local opts
+    # The following code works perfectly for 
+    opts=$(getopt --options h,v,b,d,l,s,V \
+    --long help,verbose,build,default,list,skip-check,list-config,version,check-update \
+    -- "${args[@]}" 2> /dev/null) || {
+        usage
+        die "error: parsing options" "${ERROR_PARSING_OPTIONS}"
+    }
+    eval set -- "${opts}"
+    while true; do
+        case "${1}" in
+            -h|--help)
+                usage
+                exit 0
+                shift
+                ;;
+            -v|--verbose)
+                verbose="true"
+                shift
+                ;;
+            -b|--build)
+                build_flag="true"
+                shift
+                ;;
+            -d|--default)
+                default_flag="true"
+                shift
+                ;;
+            -l|--list)
+                msg "Looking for python+jupyter environment images"
+                get_images
+                exit 0
+                ;;
+            -s|--skip-check)
+                skip_docker_check_flag="true"
+                shift
+                ;;
+            --list-config)
+                list_configuration
+                exit 0
+                ;;
+            -V|--version)
+                show_version
+                exit 0
+                ;;
+            --check-update)
+                check_updates
+                exit 0
+                ;;
+            --)
+                break
+                ;;
+            *)
+                usage
+                exit 0
+                ;;
+        esac
+    done
+}
+
+parse_user_options "${@}"

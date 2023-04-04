@@ -14,6 +14,7 @@ RUN apt-get clean
 
 # update pip and install necessary packages
 RUN /usr/local/bin/python -m pip install --upgrade pip
+# TODO: make sure setuptools is version > 61 (issue #21)
 
 ENV PIP_DISABLE_PIP_VERSION_CHECK=1
 ENV PATH="/home/pyuser/.local/bin:$PATH"
