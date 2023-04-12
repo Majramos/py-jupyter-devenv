@@ -7,6 +7,8 @@ set -o errexit
 set -o nounset
 set -o pipefail
 
+readonly VERSION=0.2.0
+
 readonly PROJECT_PATH="${ENV_PATH%/*}"
 readonly CONFIG_FILE="${ENV_PATH}/scripts/config"
 
@@ -17,8 +19,6 @@ readonly ERROR_CODE=81
 # common variables for running the package
 verbose="false"
 skip_docker_check_flag="false"
-default_flag="false"
-
 
 die() {
     local -r msg="${1}"
@@ -52,7 +52,7 @@ write_config() {
 
 # list the configuration file content except the versionof the package
 list_configuration() {
-    cat $CONFIG_FILE | grep -v "VERSION="$(read_config "VERSION")
+    cat "${CONFIG_FILE}" | grep -v "VERSION="$(read_config "VERSION")
 }
 
 # Get latest release from GitHub api
@@ -77,10 +77,9 @@ get_version_value() {
 # check for the latest releases and compares with the config.VERSION
 check_updates() {
     local -r latest_release=$(get_latest_release | sed 's/v//')
-    local -r current_version=$(read_config "VERSION")
 
     compare_value() {
-        if (( $(get_version_value $latest_release $1) > $(get_version_value $current_version $1) )); then
+        if (( $(get_version_value $latest_release $1) > $(get_version_value $VERSION $1) )); then
             return 1
         else
             return 0
@@ -90,11 +89,92 @@ check_updates() {
     if compare_value 1 && compare_value 2 && compare_value 3; then
         echo "Already running the latest and greatest!"
     else
-        echo "New version '$latest_release' (> $current_version) is available!"
+        echo "New version '$latest_release' (> $VERSION) is available!"
     fi
 }
 
-# display package version
-show_version() {
-    echo "py-jupyter-env version: "$(read_config "VERSION")
+usage () {
+    cat <<USAGE_TEXT
+Usage: env/setup ${1}
+                 [-h | --help] [-v | --verbose] [-S | --skip-check] 
+                 [--list-config] [-V | --version] [--check-updates]
+DESCRIPTION
+    Setup a python+jupyter development environment using containers trough Docker
+OPTIONS:
+    ${2}
+    -h, --help
+        Print this help and exit.
+    -v, --verbose
+        Verbose output
+    -S, --skip-check
+        Skip checking if docker is installed and initialized
+    --list-config
+        List configuration values (stack version used, python and jupyter lab)
+    -V | --version
+        Display version information
+    --check-updates
+        Checks for package updates
+AUTHOR
+    Marco Ramos @ marcoramos.me
+USAGE_TEXT
+}
+
+
+# common short options
+readonly common_short="h,v,S,V"
+readonly common_long="help,verbose,skip-check,list-config,version,check-update"
+
+
+parse_user_common_options() {
+    case "${1}" in
+        -h|--help)
+            usage "${2}" "${3}"
+            exit 0
+            ;;
+        -v|--verbose)
+            verbose="true"
+            msg "Running in verbose mode"
+            echo ""
+            ;;
+        -S|--skip-check)
+            skip_docker_check_flag="true"
+            ;;
+        --list-config)
+            list_configuration
+            exit 0
+            ;;
+        -V|--version)
+            echo "py-jupyter-devenv version: "$VERSION
+            exit 0
+            ;;
+        --check-update)
+            check_updates
+            exit 0
+            ;;
+        *)
+            usage "${2}" "${3}"
+            exit 0
+            ;;
+    esac
+}
+
+
+check_installation() {
+    if [[ $skip_docker_check_flag == "false" ]]; then
+        # Check if docker is installed
+        __temp=$(which docker)  
+        if [[ $? -eq 1 ]]; then
+            die "Docker instalation not found, please install docker first!"
+        fi
+
+        # Check if docker is initilized
+        docker_version=$(docker --version)
+        if [[ $? -eq 1 ]]; then
+            die "Docker is installed but not started, please start docker daemon!"
+        else
+            msg "Found Docker: ${docker_version}"
+        fi
+    else
+        msg "Not checking for docker instalation"
+    fi
 }
