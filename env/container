@@ -7,3 +7,118 @@ readonly ENV_PATH="$( cd -- "$(dirname "$0")" >/dev/null 2>&1 ; pwd -P )"
 
 source "${ENV_PATH}/scripts/utils.sh"
 source "${ENV_PATH}/scripts/container.sh"
+
+
+readonly usage_usage="[-c | --create] [-d | --delete] [-l | --list] [-r | remove]
+                 [-s | --stop]"
+readonly usage_options="-c, --create
+        Create a new container
+    -d, --delete
+        Delete/Remove selected container
+    -l, --list
+        List available container with python and jupyterlab
+    -r, --run
+        Run container
+    -s, --stop
+        Stop running container"
+
+create_flag="false"
+delete_flag="false"
+list_flag="false"
+run_flag="false"
+stop_flag="false"
+
+parse_user_options() {
+    local -r args=("${@}")
+    local opts
+
+    opts=$(getopt --options "${common_short},c,d,l,r,s" \
+    --long "${common_long},create,delete,list,run,stop" \
+    -- "${args[@]}" 2> /dev/null) || {
+        usage "${usage_usage}" "${usage_options}"
+        die "error: parsing options" "${ERROR_PARSING_OPTIONS}"
+    }
+
+    eval set -- "${opts}"
+    while true; do
+        case "${1}" in
+            -c|--create)
+                create_flag="true"
+                shift
+                ;;
+            -d|--delete)
+                delete_flag="true"
+                shift
+                ;;
+            -l|--list)
+                list_flag="true"
+                shift
+                ;;
+            -r|--run)
+                run_flag="true"
+                shift
+                ;;
+            -s|--stop)
+                stop_flag="true"
+                shift
+                ;;
+            # TODO: add option for restarting | issue #12
+            --)
+                break
+                ;;
+            *)
+                parse_user_common_options "${1}" "${usage_usage}" "${usage_options}"
+                shift
+                ;;
+        esac
+    done
+}
+
+parse_user_options "${@}"
+
+check_installation
+
+
+if [[ $create_flag == "false" && $delete_flag == "false" && $list_flag == "false" \
+      && $run_flag == "false" && $stop_flag == "false" ]]; then
+    usage "${usage_usage}" "${usage_options}"
+else
+    if [[ $list_flag == "true" ]]; then
+        msg "Looking for python+jupyter environment containers"
+        get_images
+    else
+        if [[ $create_flag == "true" && $delete_flag == "true" && $stop_flag == "true" ]]; then
+            echo "Can't build and remove images at the same time"
+        fi
+        
+        if [[ $create_flag == "true" ]]; then
+            msg "Creating containers"
+            echo "DEV: create container ---"
+            # prompt_images #TODO: if no image run env/image -b 
+            # prompt_container
+            # create_container
+        fi
+        
+        if [[ $run_flag == "true" ]]; then
+            msg "Starting/Running containers"
+            echo "DEV: run container ---"
+            # run_container #TODO: if no container defined in config create one
+        fi
+        
+        if [[ $stop_flag == "true" ]]; then
+            msg "Stopping containers"
+            echo "DEV: stopo container ---"
+            # TODO: stop_container | issue #12
+        fi
+        
+        if [[ $delete_flag == "true" ]]; then
+            msg "Deleting container"
+            echo "DEV: Delete container ---"
+            # TODO: delete_container | issue #12
+            # check if the container is running and warn before removing | issue #8
+        fi
+    fi
+fi
+
+msg "Exiting container setup..."
+exit 0

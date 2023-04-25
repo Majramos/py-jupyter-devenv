@@ -90,6 +90,8 @@ get_container_id() {
 }
 
 # create the Container
+# TODO: store name of container and id in config | issue #9
+# TODO: make sure of the dns server of the container | issue #22
 create_container() {
     docker create \
         --name=$container_name \

@@ -12,6 +12,11 @@ readonly VERSION=0.2.0
 readonly PROJECT_PATH="${ENV_PATH%/*}"
 readonly CONFIG_FILE="${ENV_PATH}/scripts/config"
 
+# default Values for Stack Version
+readonly PYTHON_VERSION="3.10"
+readonly JUPYTERLAB_VERSION="3.5"
+readonly IMAGE_NAME="python-jupyter-devenv"
+
 # error handling
 readonly ERROR_PARSING_OPTIONS=80
 readonly ERROR_CODE=81
@@ -50,9 +55,22 @@ write_config() {
     sed -i "s/$old_value/$new_value/" "$CONFIG_FILE"
 }
 
-# list the configuration file content except the versionof the package
+# list the configuration file content except the version of the package
 list_configuration() {
+    msg "Listing configuration..."
+    echo ""
     cat "${CONFIG_FILE}" | grep -v "VERSION="$(read_config "VERSION")
+    echo ""
+}
+
+# list default Values for Stack Version
+list_defaults() {
+    msg "Listing default stack versions..."
+    echo ""
+    echo "PYTHON VERSION     = "$PYTHON_VERSION
+    echo "JUPYTERLAB VERSION = "$JUPYTERLAB_VERSION
+    echo "IMAGE NAME         = "$IMAGE_NAME
+    echo ""
 }
 
 # Get latest release from GitHub api
@@ -109,7 +127,9 @@ OPTIONS:
     -S, --skip-check
         Skip checking if docker is installed and initialized
     --list-config
-        List configuration values (stack version used, python and jupyter lab)
+        List configuration values (container and image name)
+    --list-defaults
+        List defaults values (stack version used, python and jupyter lab)
     -V | --version
         Display version information
     --check-updates
@@ -119,11 +139,9 @@ AUTHOR
 USAGE_TEXT
 }
 
-
 # common short options
 readonly common_short="h,v,S,V"
-readonly common_long="help,verbose,skip-check,list-config,version,check-update"
-
+readonly common_long="help,verbose,skip-check,list-config,list-defaults,version,check-update"
 
 parse_user_common_options() {
     case "${1}" in
@@ -143,6 +161,10 @@ parse_user_common_options() {
             list_configuration
             exit 0
             ;;
+        --list-defaults)
+            list_defaults
+            exit 0
+            ;;
         -V|--version)
             echo "py-jupyter-devenv version: "$VERSION
             exit 0
@@ -159,6 +181,7 @@ parse_user_common_options() {
 }
 
 
+# TODO: add option to use podman instead of docker | issue #10
 check_installation() {
     if [[ $skip_docker_check_flag == "false" ]]; then
         # Check if docker is installed
@@ -167,6 +190,7 @@ check_installation() {
             die "Docker instalation not found, please install docker first!"
         fi
 
+        # TODO: check issue #7 in git repo
         # Check if docker is initilized
         docker_version=$(docker --version)
         if [[ $? -eq 1 ]]; then

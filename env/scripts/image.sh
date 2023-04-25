@@ -2,22 +2,16 @@
 #
 # Module to manage container images
 
-# Default Values for Stack Version
-readonly PYTHON_VERSION="3.9.12"
-readonly JUPYTERLAB_VERSION="3.2.9"
 
-set_defaults() {
-    python_version=$PYTHON_VERSION
-    jupyterlab_version=$JUPYTERLAB_VERSION
-    msg "Setting default stack versions values:"
-    msg " python     $PYTHON_VERSION"
-    msg " jupyterlab $JUPYTERLAB_VERSION"
-}
+# start by setting this as default stack version
+python_version=$PYTHON_VERSION
+jupyterlab_version=$JUPYTERLAB_VERSION
 
-# list all image:tag with jupyterlab
+
+# list all <image name>:<tag> for python-jupyter-devenv
 # images=($(get_images)) to get a array
 get_images() {
-    eval "docker images -a" | awk '/^jupyterlab/ {print $1":"$2}'
+    eval "docker images -a" | awk '/^python-jupyter-devenv/ {print $1":"$2}'
 }
 
 # check if image exists
@@ -27,9 +21,10 @@ check_image() {
 
 # get the id of the image
 get_image_id() {
-    docker image inspect --format="{{.Id}}" "jupyterlab:$1" | cut -d ":" -f 2
+    docker image inspect --format="{{.Id}}" "python-jupyter-devenv:$1" | cut -d ":" -f 2
 }
 
+# prompt for a version, expecting a semver type version like 1.1.1
 __prompt_version() {
     local version
     read -ep "Specify a $1 version:" -i $2 version
@@ -53,7 +48,7 @@ prompt_versions() {
 # Building the Image
 build_image() {
 
-    image="jupyterlab:py${python_version}-jl${jupyterlab_version}"
+    image="python-jupyter-devenv:py${python_version}-jl${jupyterlab_version}"
 
     # --no-cache 
     docker build \
@@ -69,18 +64,19 @@ build_image() {
 }
 
 # See images available and either choose one to use or build a new one
+# TODO: store name of image and id in config | issue #9
 prompt_images() {
     local images=($(get_images))
 
     if [[ ${#images[@]} == 0 ]]; then
-        echo "No jupyterlab images were found, need to create one"
+        echo "No python-jupyter-devenv images were found, need to create one"
         index=1
     else
         IFS=$'\n' images=($(sort -r <<<"${images[*]}")); unset IFS  # sort list of images
         images=("Build a new image" "${images[@]}")
         local -r len_options=${#images[@]}
         local i=0
-        echo "Found existing jupyterlab images:"
+        echo "Found existing python-jupyter-devenv images:"
         # print all available images
         for item in "${images[@]}"; do printf '%s\n' "  $((++i))) $item"; done
         while :; do  # choose a valid option

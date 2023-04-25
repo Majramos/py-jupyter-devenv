@@ -18,7 +18,6 @@ ARG jupyterlab_version
 # TODO: install python-dotenv
 RUN /usr/local/bin/python -m pip install --upgrade pip
 RUN pip install pip-tools jupyterlab==${jupyterlab_version}
-# TODO: make sure setuptools is version > 61 (issue #21)
 
 ENV PIP_DISABLE_PIP_VERSION_CHECK=1
 ENV PATH="/home/pyuser/.local/bin:$PATH"
@@ -26,6 +25,12 @@ ENV PATH="/home/pyuser/.local/bin:$PATH"
 # make a user
 RUN useradd -rm -s /bin/bash -g root -G sudo pyuser
 USER pyuser
+
+# TODO: config user bashrc | issue 15
+# copy and execute the script terminal_setup.sh to setup bashrc and prompt
+# COPY ./terminal_setup.sh /home/pyuser
+# RUN chmod +x /home/pyuser/script.sh
+# RUN /home/pyuser/script.sh
 
 # set a directory for the app
 WORKDIR /home/pyuser/workspace

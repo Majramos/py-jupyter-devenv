@@ -15,6 +15,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - set to use bash as shell in container
 - separate image from containers scritps
 - app version moved from config to utils.sh
+- image name to "python-jupyter-devenv" to avoid colision with jupyterlab own images
 
 ### Deprecated
 
@@ -22,6 +23,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - remove file env/container_name
 - support for python2
 - auto open of web browser window
+- detailed usage from README
 
 ### Fixed
 
