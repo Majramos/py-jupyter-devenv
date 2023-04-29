@@ -78,18 +78,17 @@ if [[ $build_flag == "false" && $remove_flag == "false" && $list_flag == "false"
 else
     if [[ $list_flag == "true" ]]; then
         msg "Looking for python+jupyter environment images"
-        get_images
+        list_images
     else
         if [[ $build_flag == "true" && $remove_flag == "true" ]]; then
             echo "Can't build and remove images at the same time"
         elif [[ $build_flag == "true" ]]; then
             msg "building image"
-            echo "DEV: build image ---"
             if [[ $default_flag == "false" ]]; then prompt_versions; fi
             build_image
         elif [[ $remove_flag == "true" ]]; then
             msg "Removing image"
-            echo "DEV: remove image ---"
+            remove_images
         fi
     fi
 fi
