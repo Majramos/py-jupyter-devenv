@@ -152,7 +152,6 @@ parse_user_common_options() {
         -v|--verbose)
             verbose="true"
             msg "Running in verbose mode"
-            echo ""
             ;;
         -S|--skip-check)
             skip_docker_check_flag="true"

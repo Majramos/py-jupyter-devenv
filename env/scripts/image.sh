@@ -10,7 +10,8 @@ jupyterlab_version=$JUPYTERLAB_VERSION
 
 # list all <image name>:<tag> for python-jupyter-devenv
 # images=($(get_images)) to get a array
-get_images() {
+list_images() {
+    echo ""
     eval "docker images -a" | awk '/^python-jupyter-devenv/ {print $1":"$2}'
 }
 
@@ -21,7 +22,7 @@ check_image() {
 
 # get the id of the image
 get_image_id() {
-    docker image inspect --format="{{.Id}}" "python-jupyter-devenv:$1" | cut -d ":" -f 2
+    docker image inspect --format="{{.Id}}" "$1" | cut -d ":" -f 2
 }
 
 # prompt for a version, expecting a semver type version like 1.1.1
@@ -45,7 +46,7 @@ prompt_versions() {
     msg "Setting Stack Versions Python:$python_version, JupyterLab:$jupyterlab_version"
 }
 
-# Building the Image
+# build a image with python and jupyter lab
 build_image() {
 
     image="python-jupyter-devenv:py${python_version}-jl${jupyterlab_version}"
@@ -54,33 +55,33 @@ build_image() {
     docker build \
         --build-arg python_version="${python_version}" \
         --build-arg jupyterlab_version="${jupyterlab_version}" \
-        -f env/jupyterlab.Dockerfile \
+        -f "${ENV_PATH}/scripts/jupyterlab.Dockerfile" \
         -t $image .
-
-    write_config "IMAGE_NAME" $image
-    write_config "IMAGE_ID" $(get_image_id $image)
 
     msg "Built image: $image"
 }
 
-# See images available and either choose one to use or build a new one
-# TODO: store name of image and id in config | issue #9
-prompt_images() {
-    local images=($(get_images))
+remove_images() {
+    echo ""
+    echo "DEV: remove image ---"
+    echo ""
+
+    local images=($(list_images))
 
     if [[ ${#images[@]} == 0 ]]; then
         echo "No python-jupyter-devenv images were found, need to create one"
         index=1
     else
         IFS=$'\n' images=($(sort -r <<<"${images[*]}")); unset IFS  # sort list of images
-        images=("Build a new image" "${images[@]}")
+        # images=("Build a new image" "${images[@]}")
         local -r len_options=${#images[@]}
         local i=0
         echo "Found existing python-jupyter-devenv images:"
         # print all available images
         for item in "${images[@]}"; do printf '%s\n' "  $((++i))) $item"; done
+        echo ""
         while :; do  # choose a valid option
-            read -ep "Choose a image: " -i 2 index
+            read -ep "Choose a image: " index
             if (( $index >= 1 && $index <= $len_options )); then
                 break
             else
@@ -89,12 +90,8 @@ prompt_images() {
         done
     fi
 
-    if [[ $index == 1 ]]; then
-        # first option is to build a new image
-        if [[ $default_flag == "false" ]]; then prompt_versions; fi
-        build_image
-    else
-        image=${images[$index-1]}
-        msg "Choose image '$image'"
-    fi
+    echo ""
+    target_image=${images[$index-1]}
+    echo "Removing image: "$target_image
+    docker image rm $target_image
 }
