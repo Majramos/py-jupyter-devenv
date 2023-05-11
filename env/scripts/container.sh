@@ -130,8 +130,6 @@ prompt_images() {
 }
 
 # create the Container and store caracteristics in config
-# TODO: store name of container and id in config | issue #9
-# TODO: store name of image and id in config | issue #9
 # TODO: make sure of the dns server of the container | issue #22
 create_container() {
 
@@ -142,14 +140,19 @@ create_container() {
         -p $port:8888 \
         $image
 
-    # write_config "CONTAINER_NAME" $container_name
-    # write_config "CONTAINER_ID" $(get_container_id $container_name)
+    write_config "CONTAINER_NAME" $container_name
+    write_config "CONTAINER_ID" $(get_container_id $container_name)
     
-    # write_config "IMAGE_NAME" $image
-    # write_config "IMAGE_ID" $(get_image_id $image)
+    write_config "IMAGE_NAME" $image
+    write_config "IMAGE_ID" $(get_image_id $image)
     
-    # write_config "PYTHON_VERSION" "${python_version}"
-    # write_config "JUPYTERLAB_VERSION" "${jupyterlab_version}"
+    # get the stack version from the image nametag
+    local second="${image//python-jupyter-devenv:/''}"
+    python_version=$(echo $second | tr "-" "\n" | grep py | sed 's/py//')
+    jupyterlab_version=$(echo $second | tr "-" "\n" | grep jl | sed 's/jl//')
+    
+    write_config "PYTHON_VERSION" "${python_version}"
+    write_config "JUPYTERLAB_VERSION" "${jupyterlab_version}"
 
     echo "Created container: $container_name @ $port"
     echo "From image:        $image"
