@@ -17,6 +17,7 @@ list_images() {
 
 # check if image exists
 check_image() {
+    local images=($(list_images))
     [[ " ${images[*]} " =~ " $1 " ]] && echo "true" || echo "false"
 }
 
@@ -39,10 +40,7 @@ __prompt_version() {
 prompt_versions() {
     python_version=$(__prompt_version "Python" $PYTHON_VERSION $python_version)
     jupyterlab_version=$(__prompt_version "Jupyter Lab" $JUPYTERLAB_VERSION $jupyterlab_version)
-    
-    write_config "PYTHON_VERSION" "${python_version}"
-    write_config "JUPYTERLAB_VERSION" "${jupyterlab_version}"
-    
+
     msg "Setting Stack Versions Python:$python_version, JupyterLab:$jupyterlab_version"
 }
 
@@ -50,22 +48,23 @@ prompt_versions() {
 build_image() {
 
     image="python-jupyter-devenv:py${python_version}-jl${jupyterlab_version}"
+    
+    if [[ $(check_image $image) == "true" ]]; then
+        echo "Image already exists! Skipping image build"
+    else
+ 
+        docker build \
+            --build-arg python_version="${python_version}" \
+            --build-arg jupyterlab_version="${jupyterlab_version}" \
+            -f "${ENV_PATH}/scripts/jupyterlab.Dockerfile" \
+            -t $image . $extra_build_args
 
-    # --no-cache 
-    docker build \
-        --build-arg python_version="${python_version}" \
-        --build-arg jupyterlab_version="${jupyterlab_version}" \
-        -f "${ENV_PATH}/scripts/jupyterlab.Dockerfile" \
-        -t $image .
-
-    msg "Built image: $image"
+        msg "Built image: $image"
+    fi
 }
 
+# select a image to remove
 remove_images() {
-    echo ""
-    echo "DEV: remove image ---"
-    echo ""
-
     local images=($(list_images))
 
     if [[ ${#images[@]} == 0 ]]; then

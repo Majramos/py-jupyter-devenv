@@ -9,7 +9,8 @@ source "${ENV_PATH}/scripts/utils.sh"
 source "${ENV_PATH}/scripts/image.sh"
 
 
-readonly usage_usage="[-b | --build] [-d | --default] [-l | --list] [-r | remove]"
+readonly usage_usage="[-b | --build] [-d | --default] [-l | --list] [-r | --remove]
+                      [--extra-args ARGS]"
 readonly usage_options="-b, --build
         Build a new container image
     -d, --default
@@ -18,19 +19,23 @@ readonly usage_options="-b, --build
     -l, list
         List available images with python and jupyterlab
     -r, remove
-        Remove selected image"
+        Remove selected image
+    --extra-args
+        Extra args to pass the image builder ex: --extra-args=\"--no-cache\""
 
 build_flag="false"
 default_flag="false"
 remove_flag="false"
 list_flag="false"
+no_cache="false"
+extra_build_args=""
 
 parse_user_options() {
     local -r args=("${@}")
     local opts
 
     opts=$(getopt --options "${common_short},b,d,l,r" \
-    --long "${common_long},build,default,list,remove" \
+    --long "${common_long},build,default,list,remove,extra-args:" \
     -- "${args[@]}" 2> /dev/null) || {
         usage "${usage_usage}" "${usage_options}"
         die "error: parsing options" "${ERROR_PARSING_OPTIONS}"
@@ -54,6 +59,12 @@ parse_user_options() {
                 ;;
             -r|--remove)
                 remove_flag="true"
+                shift
+                ;;
+            --extra-args)
+                extra_build_args=$2
+                echo $extra_build_args
+                shift
                 shift
                 ;;
             --)
