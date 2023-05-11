@@ -6,10 +6,11 @@
 readonly ENV_PATH="$( cd -- "$(dirname "$0")" >/dev/null 2>&1 ; pwd -P )"
 
 source "${ENV_PATH}/scripts/utils.sh"
+source "${ENV_PATH}/scripts/image.sh"
 source "${ENV_PATH}/scripts/container.sh"
 
 
-readonly usage_usage="[-c | --create] [-d | --delete] [-l | --list] [-r | remove]
+readonly usage_usage="[-c | --create] [-d | --delete] [-l | --list] [-r | --remove]
                  [-s | --stop]"
 readonly usage_options="-c, --create
         Create a new container
@@ -27,6 +28,7 @@ delete_flag="false"
 list_flag="false"
 run_flag="false"
 stop_flag="false"
+default_flag="false"
 
 parse_user_options() {
     local -r args=("${@}")
@@ -85,18 +87,16 @@ if [[ $create_flag == "false" && $delete_flag == "false" && $list_flag == "false
 else
     if [[ $list_flag == "true" ]]; then
         msg "Looking for python+jupyter environment containers"
-        get_images
+        list_containers
     else
         if [[ $create_flag == "true" && $delete_flag == "true" && $stop_flag == "true" ]]; then
             echo "Can't build and remove images at the same time"
         fi
         
         if [[ $create_flag == "true" ]]; then
-            msg "Creating containers"
-            echo "DEV: create container ---"
-            # prompt_images #TODO: if no image run env/image -b 
-            # prompt_container
-            # create_container
+            prompt_images
+            prompt_container
+            create_container
         fi
         
         if [[ $run_flag == "true" ]]; then
@@ -120,5 +120,6 @@ else
     fi
 fi
 
+echo ""
 msg "Exiting container setup..."
 exit 0

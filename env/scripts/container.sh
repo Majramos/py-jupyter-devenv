@@ -9,17 +9,25 @@ get_containers() {
     eval "docker container ls -a --format '{{.Names}} {{.Image}}'" | awk '{print $1}'
 }
 
-# list all containers based on a jupyterlab image
+
+# list all containers based on a python-jupyter-devenv image
 list_containers() {
     eval "docker container ls -a --format '{{.Names}} {{.Image}}'" \
-        | awk '/jupyterlab/ {print $1"\t"$2}' \
+        | awk '/$IMAGE_NAME/ {print $1"\t"$2}' \
         | column -t
 }
+
 
 # check if container name exists
 check_container() {
     local containers=($(get_containers))
     [[ " ${containers[*]} " =~ " $1 " ]] && echo "true" || echo "false"
+}
+
+
+# get the id of the container
+get_container_id() {
+    docker container inspect --format="{{.Id}}" $1
 }
 
 # get the external port for a container
@@ -39,6 +47,7 @@ get_ports() {
     echo ${ports[*]}
 }
 
+
 # check if port is being used by a container
 check_port() {
     (( ! ${#ports[@]} )) && ports=($(get_ports))
@@ -46,10 +55,12 @@ check_port() {
     [[ " ${ports[*]} " =~ " $1 " ]] && echo "true" || echo "false"
 }
 
+
 # generate random number between 1000 and 9999 to be used as port for containers
 random () {
     echo $[ $RANDOM % 8999+1000]
 }
+
 
 # choose a name to the container and port
 prompt_container() {
@@ -75,24 +86,55 @@ prompt_container() {
         done
     fi
     
-    write_config "CONTAINER_NAME" $container_name
     msg "Saving container name: $container_name"
     msg "Port choosen:          $port"
 
-    # TODO: check if this is getting the correct directory
     workspace=$PROJECT_PATH
     msg "Workspace linked to folder: $workspace"
 }
 
-# get the id of the container
-get_container_id() {
-    docker container inspect --format="{{.Id}}" $1
+
+# See images available and either choose one to use or build a new one
+prompt_images() {
+    local images=($(list_images))
+
+    if [[ ${#images[@]} == 0 ]]; then
+        echo "No python-jupyter-devenv images were found, need to create one"
+        index=1
+    else
+        IFS=$'\n' images=($(sort -r <<<"${images[*]}")); unset IFS  # sort list of images
+        images=("Build a new image" "${images[@]}")
+        local -r len_options=${#images[@]}
+        local i=0
+        echo "Found existing python-jupyter-devenv images:"
+        # print all available images
+        for item in "${images[@]}"; do printf '%s\n' "  $((++i))) $item"; done
+        while :; do  # choose a valid option
+            read -ep "Choose a image: " -i 2 index
+            if (( $index >= 1 && $index <= $len_options )); then
+                break
+            else
+                echo "Incorrect Input: Select a number 1-$len_options"
+            fi
+        done
+    fi
+
+    if [[ $index == 1 ]]; then
+        # first option is to build a new image
+        if [[ $default_flag == "false" ]]; then prompt_versions; fi
+        build_image
+    else
+        image=${images[$index-1]}
+        msg "Choose image '$image'"
+    fi
 }
 
-# create the Container
+# create the Container and store caracteristics in config
 # TODO: store name of container and id in config | issue #9
+# TODO: store name of image and id in config | issue #9
 # TODO: make sure of the dns server of the container | issue #22
 create_container() {
+
     docker create \
         --name=$container_name \
         --restart=no \
@@ -100,7 +142,14 @@ create_container() {
         -p $port:8888 \
         $image
 
-    write_config "CONTAINER_ID" $(get_container_id $container_name)
+    # write_config "CONTAINER_NAME" $container_name
+    # write_config "CONTAINER_ID" $(get_container_id $container_name)
+    
+    # write_config "IMAGE_NAME" $image
+    # write_config "IMAGE_ID" $(get_image_id $image)
+    
+    # write_config "PYTHON_VERSION" "${python_version}"
+    # write_config "JUPYTERLAB_VERSION" "${jupyterlab_version}"
 
     echo "Created container: $container_name @ $port"
     echo "From image:        $image"
