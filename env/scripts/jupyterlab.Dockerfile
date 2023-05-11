@@ -38,4 +38,4 @@ WORKDIR /home/pyuser/workspace
 EXPOSE 8888
 
 # launch the notebook as the entrypoint
-CMD jupyter lab --ip=0.0.0.0 --port=8888 --no-browser --notebook-dir=/workspace --allow-root --NotebookApp.token='' --NotebookApp.password=''
+CMD jupyter lab --ip=0.0.0.0 --port=8888 --no-browser --notebook-dir=/home/pyuser/workspace --allow-root --NotebookApp.token='' --NotebookApp.password=''
