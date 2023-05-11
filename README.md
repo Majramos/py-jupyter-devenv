@@ -45,7 +45,7 @@ env/container --help
 
 `PYTHON_VERSION=^3.10`
 
-`JUPYTERLAB_VERSION=^3.5`
+`JUPYTERLAB_VERSION=^3.6`
 
 
 ## Files

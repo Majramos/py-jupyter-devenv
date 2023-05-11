@@ -14,7 +14,7 @@ readonly CONFIG_FILE="${ENV_PATH}/scripts/config"
 
 # default Values for Stack Version
 readonly PYTHON_VERSION="3.10"
-readonly JUPYTERLAB_VERSION="3.5"
+readonly JUPYTERLAB_VERSION="3.6"
 readonly IMAGE_NAME="python-jupyter-devenv"
 
 # error handling
