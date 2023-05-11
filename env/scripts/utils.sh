@@ -132,7 +132,7 @@ OPTIONS:
         List defaults values (stack version used, python and jupyter lab)
     -V | --version
         Display version information
-    --check-updates
+    --check-update
         Checks for package updates
 AUTHOR
     Marco Ramos @ marcoramos.me
