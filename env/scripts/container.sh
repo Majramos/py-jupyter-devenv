@@ -67,7 +67,7 @@ random () {
 # choose a name to the container and port
 prompt_container() {
 
-    local default_container_name=$(read_config "CONTAINER_NAME")
+    local default_container_name=$(basename "$PROJECT_PATH")
 
     # choose a random port that is available or sugest a new one if necessary
     PORT=$(random)
