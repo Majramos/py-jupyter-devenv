@@ -26,12 +26,6 @@ ENV PATH="/home/pyuser/.local/bin:$PATH"
 RUN useradd -rm -s /bin/bash -g root -G sudo pyuser
 USER pyuser
 
-# TODO: config user bashrc | issue 15
-# copy and execute the script terminal_setup.sh to setup bashrc and prompt
-# COPY ./terminal_setup.sh /home/pyuser
-# RUN chmod +x /home/pyuser/script.sh
-# RUN /home/pyuser/script.sh
-
 # set a directory for the app
 WORKDIR /home/pyuser/workspace
 
