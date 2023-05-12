@@ -1,0 +1,113 @@
+#!/usr/bin/env bash
+#
+# Setup a python+jupyter development environment
+# This module is used to manage images
+
+
+readonly ENV_PATH="$( cd -- "$(dirname "$0")" >/dev/null 2>&1 ; pwd -P )"
+
+
+source "${ENV_PATH}/scripts/utils.sh"
+source "${ENV_PATH}/scripts/image.sh"
+
+
+readonly usage_usage="[-b | --build] [-d | --default] [-l | --list] [-r | --remove]
+                      [--extra-args ARGS]"
+readonly usage_options="-b, --build
+        Build a new container image
+    -d, --default
+        Build a new image using default stack versions
+        Use --list-config to list the defaults values
+    -l, list
+        List available images with python and jupyterlab
+    -r, remove
+        Remove selected image
+    --extra-args
+        Extra args to pass the image builder ex: --extra-args=\"--no-cache\""
+
+
+build_flag="false"
+default_flag="false"
+remove_flag="false"
+list_flag="false"
+no_cache="false"
+extra_build_args=""
+
+
+parse_user_options() {
+    local -r args=("${@}")
+    local opts
+
+    opts=$(getopt --options "${common_short},b,d,l,r" \
+    --long "${common_long},build,default,list,remove,extra-args:" \
+    -- "${args[@]}" 2> /dev/null) || {
+        usage "${usage_usage}" "${usage_options}"
+        die "error: parsing options" "${ERROR_PARSING_OPTIONS}"
+    }
+
+    eval set -- "${opts}"
+    while true; do
+        case "${1}" in
+            -b|--build)
+                build_flag="true"
+                shift
+                ;;
+            -d|--default)
+                msg "Building image using default config"
+                default_flag="true"
+                shift
+                ;;
+            -l|--list)
+                list_flag="true"
+                shift
+                ;;
+            -r|--remove)
+                remove_flag="true"
+                shift
+                ;;
+            --extra-args)
+                extra_build_args=$2
+                shift
+                shift
+                ;;
+            --)
+                break
+                ;;
+            *)
+                parse_user_common_options "${1}" "${usage_usage}" "${usage_options}"
+                shift
+                ;;
+        esac
+    done
+}
+
+
+parse_user_options "${@}"
+
+
+check_installation
+
+
+if [[ $build_flag == "false" && $remove_flag == "false" && $list_flag == "false" ]]; then
+    usage "${usage_usage}" "${usage_options}"
+else
+    if [[ $list_flag == "true" ]]; then
+        msg "Looking for python+jupyter environment images"
+        list_images
+    else
+        if [[ $build_flag == "true" && $remove_flag == "true" ]]; then
+            die "Can't build and remove images at the same time"
+        elif [[ $build_flag == "true" ]]; then
+            msg "building image"
+            if [[ $default_flag == "false" ]]; then prompt_versions; fi
+            build_image
+        elif [[ $remove_flag == "true" ]]; then
+            msg "Removing image"
+            remove_images
+        fi
+    fi
+fi
+
+echo ""
+msg "Exiting image setup..."
+exit 0

@@ -4,14 +4,50 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+
+## [Unreleased] - YYYY-MM-DD
 
 ### Added
+
 ### Changed
+
 ### Deprecated
+
 ### Removed
+
 ### Fixed
+
 ### Security
+
+
+## [0.2.0] - 2023-05-12
+
+### Added
+- store image name and id in config when creating
+- base image dockerfile without jupyter lab
+- option to start/delete/stop/restart containers
+
+### Changed
+- all config stored in one file (env/scripts/config)
+- set to use bash as shell in container
+- separate image from containers scritps
+- app version moved from config to utils.sh
+- image name to "python-jupyter-devenv" to avoid colision with jupyterlab own images
+- get container default name from directory name
+
+### Deprecated
+
+### Removed
+- remove file env/container_name
+- support for python2
+- auto open of web browser window
+- detailed usage from README
+
+### Fixed
+
+### Security
+- use custom user instead of root user
+
 
 
 ## [0.1.2] - 2022-07-02

@@ -4,15 +4,14 @@ Setup a python with jupyter lab container and configurations
 
 This library allows to build images and create/run containers
 
-The images built are named **jupyterlab:pyX.Y.Z-jlX.Y.Z**
+The images built are named **python-jupyter-devenv:pyX.Y.Z-jlX.Y.Z**
 
-You may adapt Dockerfile at /env/jupyterlab.Dockerfile
+You may adapt Dockerfile at /env/scripts/jupyterlab.Dockerfile
 
 
 ## Features
 - Creates a fully contained python development environment with jupyterlab
-- Setup with my jupyterlab user settings and a custom theme and extensions
-- Mounts volume using a local directory
+- Mounts local directory as volume
 
 
 ## Installation
@@ -32,61 +31,29 @@ cd ./<name of my project>
 
 ## Usage
 
-In your project directory you can call the script
+In your project directory you can call the scripts to get usage
 ```bash
-Usage: env/setup [-h | --help] [-v | --verbose] [-b | --build] [-d | --default]
-                 [-c | --create] [-r | --run] [--skip-check] [--lc] [--li]
-                 [--show-defaults] [--version] [--check-updates] [--update]
-DESCRIPTION
-    Setup a python+jupyter development environment using containers trough Docker
-OPTIONS:
-    -h, --help
-        Print this help and exit.
-    -v, --verbose
-        Verbose output
-    -b, --build
-        Build a new image skipping the lookup for new images
-    -d, --default
-        Build a new image using default stack versions
-        Creates container using name of the parent directory and a random port
-        Use --show-defaults to list the defaults values
-    -c, --create
-        Create a container from a existing image
-    -r, --run
-        Run a existing container
-    --stop
-        Stop a running container
-    --skip-check
-        Skip checking if docker is installed and initialized
-    --li
-        List available images with python and jupyterlab
-    --lc
-        List available containers with python and jupyterlab
-    --list-config
-        List configuration values (stack version used, python and jupyter lab)
-    --version
-        Display version information
-    --check-updates
-        Checks for package updates
+env/image --help
+```
+or
+```bash
+env/container --help
 ```
 
 
 ## Defaults
 
-`PYTHON_VERSION=3.9.12`
+`PYTHON_VERSION=^3.10`
 
-`JUPYTERLAB_VERSION=3.2.9`
+`JUPYTERLAB_VERSION=^3.6`
 
 
 ## Files
 
-/env/config
+/env/scripts/config
 - configuration variables
 
-/env/container_name
-- File with the name of the container created
-
-/env/jupyterlab.Dockerfile
+/env/scripts/jupyterlab.Dockerfile
 - File for creating docker image
 
 /install.sh
@@ -105,7 +72,7 @@ look in milestones
 
 ## Authors
 
-[@marcoramos](https://gitlab.com/majramos)
+[@marcoramos](https://marcoramos.me)
 
 
 ## Acknowledgements

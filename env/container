@@ -1,0 +1,151 @@
+#!/usr/bin/env bash
+#
+# Setup a python+jupyter development environment
+# This module is use to manage containers
+
+
+readonly ENV_PATH="$( cd -- "$(dirname "$0")" >/dev/null 2>&1 ; pwd -P )"
+
+
+source "${ENV_PATH}/scripts/utils.sh"
+source "${ENV_PATH}/scripts/image.sh"
+source "${ENV_PATH}/scripts/container.sh"
+
+
+readonly usage_usage="[-c | --create] [-d | --delete] [-l | --list] [-r | --remove]
+                 [-s | --stop] [--extra-args ARGS]"
+readonly usage_options="-c, --create
+        Create a new container
+    -d, --delete
+        Delete/Remove selected container
+    -l, --list
+        List available container with python and jupyterlab
+    -r, --run
+        Run container
+    -s, --stop
+        Stop running container
+    --extra-args
+        Extra args to pass to the container creation ex: --extra-args=\"--no-cache\""
+
+
+create_flag="false"
+delete_flag="false"
+list_flag="false"
+run_flag="false"
+stop_flag="false"
+default_flag="false"
+restart_flag="false"
+extra_build_args=""
+
+
+parse_user_options() {
+    local -r args=("${@}")
+    local opts
+
+    opts=$(getopt --options "${common_short},c,d,l,r,s,R" \
+    --long "${common_long},create,delete,list,run,stop" \
+    -- "${args[@]}" 2> /dev/null) || {
+        usage "${usage_usage}" "${usage_options}"
+        die "error: parsing options" "${ERROR_PARSING_OPTIONS}"
+    }
+
+    eval set -- "${opts}"
+    while true; do
+        case "${1}" in
+            -c|--create)
+                create_flag="true"
+                shift
+                ;;
+            -d|--delete)
+                delete_flag="true"
+                shift
+                ;;
+            -l|--list)
+                list_flag="true"
+                shift
+                ;;
+            -r|--run)
+                run_flag="true"
+                shift
+                ;;
+            -s|--stop)
+                stop_flag="true"
+                shift
+                ;;
+            -R|--restart_flag)
+                restart_flag="true"
+                shift
+                ;;
+            --extra-args)
+                extra_build_args=$2
+                shift
+                shift
+                ;;
+            --)
+                break
+                ;;
+            *)
+                parse_user_common_options "${1}" "${usage_usage}" "${usage_options}"
+                shift
+                ;;
+        esac
+    done
+}
+
+
+parse_user_options "${@}"
+
+
+check_installation
+
+
+if [[ $create_flag == "false" && $delete_flag == "false" \
+    && $list_flag == "false" && $run_flag == "false" \
+    && $stop_flag == "false" && $restart_flag == "false" ]]; then
+    usage "${usage_usage}" "${usage_options}"
+else
+    if [[ $list_flag == "true" ]]; then
+        msg "Looking for python+jupyter environment containers"
+        list_containers | awk '{print $1"\t"$2}' | column -t
+    else
+        if [[ $create_flag == "true" && $delete_flag == "true" \
+            && $stop_flag == "true" && $restart_flag == "true" ]]; then
+            die "Can't use all the options at the same time"
+        elif [[ $create_flag == "true" \
+            && ($delete_flag == "true" || $stop_flag == "true") ]]; then
+            die "Can't create and delete/stop a container at he same time"
+        elif [[ $restart_flag == "true" && $delete_flag == "true" ]]; then
+            die "Can't create and delete/stop a container at he same time"
+        fi
+
+        if [[ $create_flag == "true" ]]; then
+            prompt_images
+            prompt_container
+            create_container
+        fi
+
+        if [[ $run_flag == "true" ]]; then
+            msg "Starting/Running container"
+            run_container
+        fi
+
+        if [[ $stop_flag == "true" ]]; then
+            msg "Stopping container"
+            stop_container
+        fi
+
+        if [[ $delete_flag == "true" ]]; then
+            msg "Deleting container"
+            delete_container
+        fi
+
+        if [[ $restart_flag == "true" ]]; then
+            msg "Restart container"
+            restart_container
+        fi
+    fi
+fi
+
+echo ""
+msg "Exiting container setup..."
+exit 0
