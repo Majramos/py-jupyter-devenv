@@ -10,11 +10,11 @@ get_containers() {
 }
 
 
+# get also the state and then select only the colum when 
 # list all containers based on a python-jupyter-devenv image
 list_containers() {
-    eval "docker container ls -a --format '{{.Names}} {{.Image}}'" \
-        | awk '/$IMAGE_NAME/ {print $1"\t"$2}' \
-        | column -t
+    eval "docker container ls -a --format '{{.Names}} {{.Image}} {{.Status}}'" \
+        | awk '/python-jupyter-devenv/ {print $1"\t"$2"\t"$3}'
 }
 
 
@@ -30,14 +30,16 @@ get_container_id() {
     docker container inspect --format="{{.Id}}" $1
 }
 
+
 # get the external port for a container
 get_container_port() {
     echo $(eval "docker inspect --format='{{json .HostConfig.PortBindings}}' $1" \
            | awk -F '[][]' '{print $2}' | grep -o '[0-9]\{4\}')
 }
 
-ports=()
+
 # get all ports being used
+ports=()
 get_ports() {
     local containers=($(get_containers))
     local ports=()
@@ -51,7 +53,7 @@ get_ports() {
 # check if port is being used by a container
 check_port() {
     (( ! ${#ports[@]} )) && ports=($(get_ports))
-    
+
     [[ " ${ports[*]} " =~ " $1 " ]] && echo "true" || echo "false"
 }
 
@@ -85,7 +87,7 @@ prompt_container() {
             read -ep "Choose a port available: " -i "${PORT}" port
         done
     fi
-    
+
     msg "Saving container name: $container_name"
     msg "Port choosen:          $port"
 
@@ -96,6 +98,7 @@ prompt_container() {
 
 # See images available and either choose one to use or build a new one
 prompt_images() {
+
     local images=($(list_images))
 
     if [[ ${#images[@]} == 0 ]]; then
@@ -139,19 +142,19 @@ create_container() {
         --restart=no \
         -v "/${workspace}":/home/pyuser/workspace \
         -p $port:8888 \
-        $image
+        $image $extra_build_args
 
     write_config "CONTAINER_NAME" $container_name
     write_config "CONTAINER_ID" $(get_container_id $container_name)
-    
+
     write_config "IMAGE_NAME" $image
     write_config "IMAGE_ID" $(get_image_id $image)
-    
+
     # get the stack version from the image nametag
     local second="${image//python-jupyter-devenv:/''}"
     python_version=$(echo $second | tr "-" "\n" | grep py | sed 's/py//')
     jupyterlab_version=$(echo $second | tr "-" "\n" | grep jl | sed 's/jl//')
-    
+
     write_config "PYTHON_VERSION" "${python_version}"
     write_config "JUPYTERLAB_VERSION" "${jupyterlab_version}"
 
@@ -161,81 +164,83 @@ create_container() {
 }
 
 
-run_container() {
-    
+# container is 'running' or 'exited'
+_get_container_name() {
+
     # load container name
     local container=$(read_config "CONTAINER_NAME")
     msg "Found container name: $container"
 
     # check if the container exits first
     if [[ $(check_container $container) == "true" ]]; then
-        if [[ "$( docker container inspect -f '{{.State.Status}}' $container )" != "running" ]]; then
-            msg "Starting $container using docker"
-            docker start $container
-        else
-            msg "Container '$container' is already running"
-        fi
-
-        port=$(get_container_port $container)
-        echo "Environment at: http://localhost:$port/"
+        echo $container
     else
         die "Container '$container' doesn't exit"
     fi
+}
+
+
+_get_container_status() {
+    docker container inspect -f '{{.State.Status}}' $1
+}
+
+
+run_container() {
+    
+    local container=$(_get_container_name)
+
+    if [[ "$( _get_container_status $container )" != "running" ]]; then
+        msg "Starting $container using docker"
+        docker start $container
+    else
+        msg "Container '$container' is already running"
+    fi
+
+    port=$(get_container_port $container)
+    echo ""
+    echo "Environment at: http://localhost:$port/"
 }
 
 
 delete_container() {
-    # load container name
-    local container=$(read_config "CONTAINER_NAME")
-    msg "Found container name: $container"
-    
-    # check if the container exits first
-    if [[ $(check_container $container) == "true" ]]; then
-        if [[ "$( docker container inspect -f '{{.State.Status}}' $container )" != "running" ]]; then
-            msg "Starting $container using docker"
-            docker rm $container
-            
-            write_config "CONTAINER_NAME" ""
-            write_config "CONTAINER_ID" ""
-            write_config "IMAGE_NAME" ""
-            write_config "IMAGE_ID" ""
-            write_config "PYTHON_VERSION" "${PYTHON_VERSION}"
-            write_config "JUPYTERLAB_VERSION" "${JUPYTERLAB_VERSION}"
-        else
-            echo "Container '$container' is still running"
-        fi
-    else
-        die "Container '$container' doesn't exit"
-    fi
 
+    local container=$(_get_container_name)
+
+    if [[ "$( _get_container_status $container )" != "running" ]]; then
+        msg "Starting $container using docker"
+        docker rm $container
+
+        write_config "CONTAINER_NAME" "${IMAGE_NAME}"
+        write_config "CONTAINER_ID" ""
+        write_config "IMAGE_NAME" ""
+        write_config "IMAGE_ID" ""
+        write_config "PYTHON_VERSION" "${PYTHON_VERSION}"
+        write_config "JUPYTERLAB_VERSION" "${JUPYTERLAB_VERSION}"
+    else
+        echo ""
+        die "Container '$container' is still running"
+    fi
 }
 
-# docker stop
+
 stop_container() {
-    # load container name
-    local container=$(read_config "CONTAINER_NAME")
 
-    local containers=($(get_containers))
-    if [[ ${#containers[@]} == 0 ]]; then
-        echo "No containers were found!"
-        exit 0
+    local container=$(_get_container_name)
+
+    if [[ "$( _get_container_status $container )" == "running" ]]; then
+        msg "Starting $container using docker"
+        docker stop $container
     else
-        local -r len_options=${#containers[@]}
-        local i=0
-        echo "Found existing jupyter lab containers:"
-        for item in "${containers[@]}"; do
-            printf '%s\n' "  $((++i))) $item"
-        done
-        while :; do  # choose a valid option
-            read -ep "Choose a container: " index
-            if (( $index >= 1 && $index <= $len_options )); then
-                break
-            else
-                echo "Incorrect Input: Select a number 1-$len_options"
-            fi
-        done
+        echo ""
+        die "Container '$container' is not running and can't be stopped"
     fi
-    container=${containers[$index-1]}
+}
 
-    echo "Stopping '$(docker stop $container)' ..."
+
+restart_container() {
+
+    local container=$(_get_container_name)
+
+    msg "Starting $container using docker"
+    docker restart $container
 }
