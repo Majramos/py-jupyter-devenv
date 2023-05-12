@@ -3,7 +3,9 @@
 # Setup a python+jupyter development environment
 # This module is use to manage containers
 
+
 readonly ENV_PATH="$( cd -- "$(dirname "$0")" >/dev/null 2>&1 ; pwd -P )"
+
 
 source "${ENV_PATH}/scripts/utils.sh"
 source "${ENV_PATH}/scripts/image.sh"
@@ -11,7 +13,7 @@ source "${ENV_PATH}/scripts/container.sh"
 
 
 readonly usage_usage="[-c | --create] [-d | --delete] [-l | --list] [-r | --remove]
-                 [-s | --stop]"
+                 [-s | --stop] [--extra-args ARGS]"
 readonly usage_options="-c, --create
         Create a new container
     -d, --delete
@@ -21,7 +23,10 @@ readonly usage_options="-c, --create
     -r, --run
         Run container
     -s, --stop
-        Stop running container"
+        Stop running container
+    --extra-args
+        Extra args to pass to the container creation ex: --extra-args=\"--no-cache\""
+
 
 create_flag="false"
 delete_flag="false"
@@ -29,12 +34,15 @@ list_flag="false"
 run_flag="false"
 stop_flag="false"
 default_flag="false"
+restart_flag="false"
+extra_build_args=""
+
 
 parse_user_options() {
     local -r args=("${@}")
     local opts
 
-    opts=$(getopt --options "${common_short},c,d,l,r,s" \
+    opts=$(getopt --options "${common_short},c,d,l,r,s,R" \
     --long "${common_long},create,delete,list,run,stop" \
     -- "${args[@]}" 2> /dev/null) || {
         usage "${usage_usage}" "${usage_options}"
@@ -64,7 +72,15 @@ parse_user_options() {
                 stop_flag="true"
                 shift
                 ;;
-            # TODO: add option for restarting | issue #12
+            -R|--restart_flag)
+                restart_flag="true"
+                shift
+                ;;
+            --extra-args)
+                extra_build_args=$2
+                shift
+                shift
+                ;;
             --)
                 break
                 ;;
@@ -76,43 +92,56 @@ parse_user_options() {
     done
 }
 
+
 parse_user_options "${@}"
+
 
 check_installation
 
 
-if [[ $create_flag == "false" && $delete_flag == "false" && $list_flag == "false" \
-      && $run_flag == "false" && $stop_flag == "false" ]]; then
+if [[ $create_flag == "false" && $delete_flag == "false" \
+    && $list_flag == "false" && $run_flag == "false" \
+    && $stop_flag == "false" && $restart_flag == "false" ]]; then
     usage "${usage_usage}" "${usage_options}"
 else
     if [[ $list_flag == "true" ]]; then
         msg "Looking for python+jupyter environment containers"
-        list_containers
+        list_containers | awk '{print $1"\t"$2}' | column -t
     else
-        if [[ $create_flag == "true" && $delete_flag == "true" && $stop_flag == "true" ]]; then
-            echo "Can't build and remove images at the same time"
+        if [[ $create_flag == "true" && $delete_flag == "true" \
+            && $stop_flag == "true" && $restart_flag == "true" ]]; then
+            die "Can't use all the options at the same time"
+        elif [[ $create_flag == "true" \
+            && ($delete_flag == "true" || $stop_flag == "true") ]]; then
+            die "Can't create and delete/stop a container at he same time"
+        elif [[ $restart_flag == "true" && $delete_flag == "true" ]]; then
+            die "Can't create and delete/stop a container at he same time"
         fi
-        
+
         if [[ $create_flag == "true" ]]; then
             prompt_images
             prompt_container
             create_container
         fi
-        
+
         if [[ $run_flag == "true" ]]; then
             msg "Starting/Running container"
             run_container
         fi
-        
+
         if [[ $stop_flag == "true" ]]; then
-            msg "Stopping containers"
-            echo "DEV: stop container ---"
-            # TODO: stop_container | issue #12
+            msg "Stopping container"
+            stop_container
         fi
-        
+
         if [[ $delete_flag == "true" ]]; then
             msg "Deleting container"
             delete_container
+        fi
+
+        if [[ $restart_flag == "true" ]]; then
+            msg "Restart container"
+            restart_container
         fi
     fi
 fi

@@ -15,16 +15,19 @@ list_images() {
     eval "docker images -a" | awk '/^python-jupyter-devenv/ {print $1":"$2}'
 }
 
+
 # check if image exists
 check_image() {
     local images=($(list_images))
     [[ " ${images[*]} " =~ " $1 " ]] && echo "true" || echo "false"
 }
 
+
 # get the id of the image
 get_image_id() {
     docker image inspect --format="{{.Id}}" "$1" | cut -d ":" -f 2
 }
+
 
 # prompt for a version, expecting a semver type version like 1.1.1
 __prompt_version() {
@@ -36,6 +39,7 @@ __prompt_version() {
     echo $version
 }
 
+
 # Prompt for stack versions
 prompt_versions() {
     python_version=$(__prompt_version "Python" $PYTHON_VERSION $python_version)
@@ -43,6 +47,7 @@ prompt_versions() {
 
     msg "Setting Stack Versions Python:$python_version, JupyterLab:$jupyterlab_version"
 }
+
 
 # build a image with python and jupyter lab
 build_image() {
@@ -62,6 +67,7 @@ build_image() {
         msg "Built image: $image"
     fi
 }
+
 
 # select a image to remove
 remove_images() {
