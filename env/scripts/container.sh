@@ -129,6 +129,7 @@ prompt_images() {
     fi
 }
 
+
 # create the Container and store caracteristics in config
 # TODO: make sure of the dns server of the container | issue #22
 create_container() {
@@ -159,7 +160,9 @@ create_container() {
     echo "Linked to:         $workspace"
 }
 
+
 run_container() {
+    
     # load container name
     local container=$(read_config "CONTAINER_NAME")
     msg "Found container name: $container"
@@ -176,10 +179,38 @@ run_container() {
         port=$(get_container_port $container)
         echo "Environment at: http://localhost:$port/"
     else
-        die "Container '$container' has not been created, please create it first"
+        die "Container '$container' doesn't exit"
     fi
 }
 
+
+delete_container() {
+    # load container name
+    local container=$(read_config "CONTAINER_NAME")
+    msg "Found container name: $container"
+    
+    # check if the container exits first
+    if [[ $(check_container $container) == "true" ]]; then
+        if [[ "$( docker container inspect -f '{{.State.Status}}' $container )" != "running" ]]; then
+            msg "Starting $container using docker"
+            docker rm $container
+            
+            write_config "CONTAINER_NAME" ""
+            write_config "CONTAINER_ID" ""
+            write_config "IMAGE_NAME" ""
+            write_config "IMAGE_ID" ""
+            write_config "PYTHON_VERSION" "${PYTHON_VERSION}"
+            write_config "JUPYTERLAB_VERSION" "${JUPYTERLAB_VERSION}"
+        else
+            echo "Container '$container' is still running"
+        fi
+    else
+        die "Container '$container' doesn't exit"
+    fi
+
+}
+
+# docker stop
 stop_container() {
     # load container name
     local container=$(read_config "CONTAINER_NAME")

@@ -100,22 +100,19 @@ else
         fi
         
         if [[ $run_flag == "true" ]]; then
-            msg "Starting/Running containers"
-            echo "DEV: run container ---"
-            # run_container #TODO: if no container defined in config create one
+            msg "Starting/Running container"
+            run_container
         fi
         
         if [[ $stop_flag == "true" ]]; then
             msg "Stopping containers"
-            echo "DEV: stopo container ---"
+            echo "DEV: stop container ---"
             # TODO: stop_container | issue #12
         fi
         
         if [[ $delete_flag == "true" ]]; then
             msg "Deleting container"
-            echo "DEV: Delete container ---"
-            # TODO: delete_container | issue #12
-            # check if the container is running and warn before removing | issue #8
+            delete_container
         fi
     fi
 fi
