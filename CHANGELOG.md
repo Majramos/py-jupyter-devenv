@@ -4,11 +4,28 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+
 ## [Unreleased] - YYYY-MM-DD
+
+### Added
+
+### Changed
+
+### Deprecated
+
+### Removed
+
+### Fixed
+
+### Security
+
+
+## [0.2.0] - 2023-05-12
 
 ### Added
 - store image name and id in config when creating
 - base image dockerfile without jupyter lab
+- option to start/delete/stop/restart containers
 
 ### Changed
 - all config stored in one file (env/scripts/config)
@@ -16,6 +33,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - separate image from containers scritps
 - app version moved from config to utils.sh
 - image name to "python-jupyter-devenv" to avoid colision with jupyterlab own images
+- get container default name from directory name
 
 ### Deprecated
 
@@ -28,7 +46,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 ### Security
-- custom user instead of root user
+- use custom user instead of root user
 
 
 
