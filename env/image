@@ -3,7 +3,9 @@
 # Setup a python+jupyter development environment
 # This module is used to manage images
 
+
 readonly ENV_PATH="$( cd -- "$(dirname "$0")" >/dev/null 2>&1 ; pwd -P )"
+
 
 source "${ENV_PATH}/scripts/utils.sh"
 source "${ENV_PATH}/scripts/image.sh"
@@ -23,12 +25,14 @@ readonly usage_options="-b, --build
     --extra-args
         Extra args to pass the image builder ex: --extra-args=\"--no-cache\""
 
+
 build_flag="false"
 default_flag="false"
 remove_flag="false"
 list_flag="false"
 no_cache="false"
 extra_build_args=""
+
 
 parse_user_options() {
     local -r args=("${@}")
@@ -63,7 +67,6 @@ parse_user_options() {
                 ;;
             --extra-args)
                 extra_build_args=$2
-                echo $extra_build_args
                 shift
                 shift
                 ;;
@@ -77,6 +80,7 @@ parse_user_options() {
         esac
     done
 }
+
 
 parse_user_options "${@}"
 
@@ -92,7 +96,7 @@ else
         list_images
     else
         if [[ $build_flag == "true" && $remove_flag == "true" ]]; then
-            echo "Can't build and remove images at the same time"
+            die "Can't build and remove images at the same time"
         elif [[ $build_flag == "true" ]]; then
             msg "building image"
             if [[ $default_flag == "false" ]]; then prompt_versions; fi
