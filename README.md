@@ -29,6 +29,9 @@ finally move in to the directory
 cd ./<name of my project>
 ```
 
+can also just clone the repo and copy the "env" directory
+
+
 ## Usage
 
 In your project directory you can call the scripts to get usage
