@@ -5,12 +5,14 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 
-## [Unreleased] - YYYY-MM-DD
+## [0.2.1] - YYYY-MM-DD
 
 ### Added
+- option to keep the original directory after installation
 
 ### Changed
 - the installation guide in README indicating that one can simply clone the repo
+- updated the installation script with new features
 
 ### Deprecated
 
