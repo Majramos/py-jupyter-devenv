@@ -20,6 +20,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Security
 
 
+## [0.2.1] - 2023-05-26
+
+### Added
+- option to keep the original directory after installation
+
+### Changed
+- the installation guide in README indicating that one can simply clone the repo
+- updated the installation script with new features
+
+
 ## [0.2.0] - 2023-05-12
 
 ### Added
@@ -35,19 +45,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - image name to "python-jupyter-devenv" to avoid colision with jupyterlab own images
 - get container default name from directory name
 
-### Deprecated
-
 ### Removed
 - remove file env/container_name
 - support for python2
 - auto open of web browser window
 - detailed usage from README
 
-### Fixed
-
 ### Security
 - use custom user instead of root user
-
 
 
 ## [0.1.2] - 2022-07-02
