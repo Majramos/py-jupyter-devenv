@@ -7,10 +7,9 @@ SHELL ["/bin/bash", "-c"]
 ENV SHELL=/bin/bash
 
 # install the linux libraries needed
-RUN apt-get update
-RUN apt-get install -y git nodejs vim nano
-# clean temp files
-RUN apt-get clean
+RUN apt-get update && \
+    apt-get install -y git nodejs vim nano && \
+    apt-get clean && rm -rf /var/lib/apt/lists/*
 
 ARG jupyterlab_version
 
@@ -20,11 +19,16 @@ RUN /usr/local/bin/python -m pip install --upgrade pip
 RUN pip install pip-tools jupyterlab==${jupyterlab_version}
 
 ENV PIP_DISABLE_PIP_VERSION_CHECK=1
-ENV PATH="/home/pyuser/.local/bin:$PATH"
+ENV PATH="$PATH:/home/pyuser/.local/bin"
 
 # make a user
 RUN useradd -rm -s /bin/bash -g root -G sudo pyuser
+
 USER pyuser
+
+RUN echo $' \n\
+alias ls="ls -ahoF --group-directories-first --color=always" \n\
+export PATH=$PATH ' >> /home/pyuser/.bashrc
 
 # set a directory for the app
 WORKDIR /home/pyuser/workspace
