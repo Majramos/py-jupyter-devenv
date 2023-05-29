@@ -33,6 +33,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 - environment path not getting the correct path when creating terminal
 - missing extra-args: in container getopt validation
+- extra-args not working due to order of commands in create container
 
 
 ## [0.2.1] - 2023-05-26

@@ -143,7 +143,7 @@ create_container() {
         --restart=no \
         -v "/${workspace}":/home/pyuser/workspace \
         -p $port:8888 \
-        $image $extra_build_args
+        $extra_build_args $image
 
     write_config "CONTAINER_NAME" $container_name
     write_config "CONTAINER_ID" $(get_container_id $container_name)
