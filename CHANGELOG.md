@@ -31,7 +31,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - changed line endings in jupyterlab.Dockerfile
 
 ### Fixed
-- environment path not getting the correct path when creating terminals
+- environment path not getting the correct path when creating terminal
+- missing extra-args: in container getopt validation
 
 
 ## [0.2.1] - 2023-05-26

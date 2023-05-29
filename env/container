@@ -43,7 +43,7 @@ parse_user_options() {
     local opts
 
     opts=$(getopt --options "${common_short},c,d,l,r,s,R" \
-    --long "${common_long},create,delete,list,run,stop" \
+    --long "${common_long},create,delete,list,run,stop,extra-args:" \
     -- "${args[@]}" 2> /dev/null) || {
         usage "${usage_usage}" "${usage_options}"
         die "error: parsing options" "${ERROR_PARSING_OPTIONS}"
