@@ -139,6 +139,7 @@ create_container() {
 
     docker create \
         --name=$container_name \
+        --hostname=$container_name \
         --restart=no \
         -v "/${workspace}":/home/pyuser/workspace \
         -p $port:8888 \

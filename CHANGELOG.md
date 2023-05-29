@@ -25,6 +25,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - alias in .bashrc for ls command
 - clean up /var/lib/apt/lists/ to decrease image size
+- container hostname set to the container name
 
 ### Changed
 - changed line endings in jupyterlab.Dockerfile
