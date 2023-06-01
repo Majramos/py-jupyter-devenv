@@ -20,6 +20,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Security
 
 
+## [0.2.2] - 2023-05-29
+
+### Added
+- alias in .bashrc for ls command
+- clean up /var/lib/apt/lists/ to decrease image size
+- container hostname set to the container name
+
+### Changed
+- changed line endings in jupyterlab.Dockerfile
+
+### Fixed
+- environment path not getting the correct path when creating terminal
+- missing extra-args: in container getopt validation
+- extra-args not working due to order of commands in create container
+
+
 ## [0.2.1] - 2023-05-26
 
 ### Added
