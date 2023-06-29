@@ -7,7 +7,7 @@ set -o errexit
 set -o nounset
 set -o pipefail
 
-readonly VERSION=0.2.0
+readonly VERSION=0.2.3
 
 readonly PROJECT_PATH="${ENV_PATH%/*}"
 readonly CONFIG_FILE="${ENV_PATH}/scripts/config"

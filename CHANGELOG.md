@@ -20,6 +20,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Security
 
 
+
+## [0.2.3] - 2023-06-30
+
+### Fixed
+- encoding in the install.sh file
+
+
 ## [0.2.2] - 2023-05-29
 
 ### Added
