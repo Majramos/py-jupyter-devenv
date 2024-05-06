@@ -7,14 +7,14 @@ set -o errexit
 set -o nounset
 set -o pipefail
 
-readonly VERSION=0.2.3
+readonly VERSION=0.3.0
 
 readonly PROJECT_PATH="${ENV_PATH%/*}"
 readonly CONFIG_FILE="${ENV_PATH}/scripts/config"
 
 # default Values for Stack Version
-readonly PYTHON_VERSION="3.10"
-readonly JUPYTERLAB_VERSION="3.6"
+readonly PYTHON_VERSION="3.11"
+readonly JUPYTERLAB_VERSION="4.1"
 readonly IMAGE_NAME="python-jupyter-devenv"
 
 # error handling
