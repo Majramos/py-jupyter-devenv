@@ -28,7 +28,7 @@ USER pyuser
 
 RUN echo $' \n\
 alias ls="ls -ahoF --group-directories-first --color=always" \n\
-export PATH=$PATH ' >> /home/pyuser/.bashrc
+export PATH="$PATH:/home/pyuser/.local/bin" ' >> /home/pyuser/.bashrc
 
 # set a directory for the app
 WORKDIR /home/pyuser/workspace
