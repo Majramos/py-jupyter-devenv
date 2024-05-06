@@ -1,5 +1,14 @@
 # py-jupyter-devenv
 
+<div align="center">
+
+![GitLab Release](https://img.shields.io/gitlab/v/release/majramos%2Fpy-jupyter-devenv?sort=date&date_order_by=released_at&label=latest%20release)
+![GitLab Tag](https://img.shields.io/gitlab/v/tag/majramos%2Fpy-jupyter-devenv?sort=date&label=latest%20tag)
+![GitLab Last Commit](https://img.shields.io/gitlab/last-commit/majramos%2Fpy-jupyter-devenv?ref=dev)
+![GitLab License](https://img.shields.io/gitlab/license/majramos%2Fpy-jupyter-devenv?color=008080)
+
+</div>
+
 Setup a python with jupyter lab container and configurations
 
 This library allows to build images and create/run containers
@@ -46,9 +55,9 @@ env/container --help
 
 ## Defaults
 
-`PYTHON_VERSION=^3.10`
+`PYTHON_VERSION=^3.11`
 
-`JUPYTERLAB_VERSION=^3.6`
+`JUPYTERLAB_VERSION=^4.1`
 
 
 ## Files
