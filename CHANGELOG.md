@@ -20,6 +20,25 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Security
 
 
+## [0.3.0] - 2024-05-06
+
+### Added
+- add .dockerignore file
+- projects tags in README
+
+### Changed
+- increase default python version to 3.11 and jupyter lab to 4.1
+
+### Deprecated
+
+### Removed
+
+### Fixed
+- string replacing on dockerfile wasn't working properly
+
+### Security
+
+
 
 ## [0.2.3] - 2023-06-30
 
